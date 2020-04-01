@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+List<Task> tasks = <Task>[];
+
 void main() {
   runApp(MyApp());
 }
@@ -13,13 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Laurens App'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -28,11 +30,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  void openTaskDialog() {
+    //Lets create mock items for now
     setState(() {
-      _counter++;
+      tasks.clear();
+      tasks.add(Task(0, 'Push-ups'));
+      tasks.add(Task(0, 'Sit-ups'));
     });
   }
 
@@ -40,27 +43,43 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Center(child: Text(widget.title)),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            tasks.isNotEmpty
+                ? ListView.separated(
+                    itemBuilder: (BuildContext context, int index) {
+                      final Task currentTask = tasks[index];
+                      return Card(
+                        child: ListTile(
+                          title: Text('${currentTask.description}'),
+                          trailing: Icon(Icons.more_vert),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
+                    itemCount: tasks.length)
+                : const Center(
+                    child: Text('Nothing to do... Great!'),
+                  ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: openTaskDialog,
+        tooltip: 'Add Task',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+class Task {
+  Task(this.id, this.description);
+
+  int id;
+  String description;
 }
