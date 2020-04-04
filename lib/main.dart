@@ -32,24 +32,37 @@ class _MyHomePageState extends State<MyHomePage> {
   //--VARIABLES
   //------------
   List<Task> tasks = <Task>[];
+  Task selectedTask;
 
-  //Task Editor Screen
-  bool showTaskDialog = false;
+  //Task Creator Screen
+  bool showCreateTaskDialog = false;
+  bool showEditTaskDialog = false;
   TextEditingController taskTextController = TextEditingController();
   TextEditingController quantityTextController = TextEditingController();
-
-  int radioValue;
+  int unitSelected;
 
   //------------
   //--METHODS
   //------------
-  void openTaskDialog() {
-    if (!showTaskDialog) {
-      //Lets create mock items for now
+  void openCreateTaskDialog() {
+    if (!showCreateTaskDialog) {
       setState(() {
         taskTextController.clear();
-        radioValue = 0;
-        showTaskDialog = true;
+        quantityTextController.clear();
+        unitSelected = 0;
+        showCreateTaskDialog = true;
+      });
+    }
+  }
+
+  void openEditTaskDialog(Task currentTask) {
+    if (!showEditTaskDialog) {
+      setState(() {
+        selectedTask = currentTask;
+        taskTextController.text = currentTask.name;
+        quantityTextController.text = currentTask.quantity.toString();
+        unitSelected = currentTask.unit;
+        showEditTaskDialog = true;
       });
     }
   }
@@ -75,7 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           children: <Widget>[
             homeScreen(),
-            if (showTaskDialog) taskEditor(),
+            if (showCreateTaskDialog) taskCreator(),
+            if (showEditTaskDialog) taskEditor(),
           ],
         ),
       ),
@@ -93,6 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     title: Text('${currentTask.name}'),
                     trailing: Text(
                         '${currentTask.quantity} ${getUnitName(currentTask.unit)}'),
+                    onTap: () {
+                      openEditTaskDialog(currentTask);
+                    },
                   ),
                 );
               },
@@ -103,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Nothing to do... Great!'),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: openTaskDialog,
+        onPressed: openCreateTaskDialog,
         tooltip: 'Add Task',
         child: Icon(Icons.add),
       ),
@@ -111,6 +128,126 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget taskEditor() {
+    return Container(
+      color: Colors.black.withAlpha(200),
+      child: AlertDialog(
+        title: const Text('Edit Task'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const SizedBox(height: 10),
+              TextField(
+                textAlignVertical: TextAlignVertical.bottom,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Enter a task',
+                ),
+                controller: taskTextController,
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                textAlignVertical: TextAlignVertical.bottom,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Amount',
+                ),
+                controller: quantityTextController,
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 0;
+                          });
+                        },
+                        child: Text(
+                          'times',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 0
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 1;
+                          });
+                        },
+                        child: Text(
+                          'minutes',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 1
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 2;
+                          });
+                        },
+                        child: Text(
+                          'hours',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 2
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              setState(() {
+                showEditTaskDialog = false;
+              });
+            },
+            child: const Text('Cancel'),
+          ),
+          FlatButton(
+            onPressed: () {
+              setState(() {
+                print('Added task');
+                tasks[selectedTask.id] = Task(
+                    selectedTask.id,
+                    '${taskTextController.text}',
+                    int.parse(quantityTextController.text),
+                    unitSelected,
+                    false);
+                showEditTaskDialog = false;
+              });
+            },
+            child: const Text('Edit'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget taskCreator() {
     return Container(
       color: Colors.black.withAlpha(200),
       child: AlertDialog(
@@ -139,52 +276,65 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: quantityTextController,
               ),
               const SizedBox(height: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Radio(
-                    value: 0,
-                    groupValue: radioValue,
-                    onChanged: (int value) {
-                      setState(() {
-                        radioValue = value;
-                      });
-                    },
-                  ),
-                  const Text(
-                    'times',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Radio(
-                    value: 1,
-                    groupValue: radioValue,
-                    onChanged: (int value) {
-                      setState(() {
-                        radioValue = value;
-                      });
-                    },
-                  ),
-                  const Text(
-                    'minutes',
-                    style: TextStyle(
-                      fontSize: 16.0,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 0;
+                          });
+                        },
+                        child: Text(
+                          'times',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 0
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
                     ),
-                  ),
-                  Radio(
-                    value: 2,
-                    groupValue: radioValue,
-                    onChanged: (int value) {
-                      setState(() {
-                        radioValue = value;
-                      });
-                    },
-                  ),
-                  const Text(
-                    'hours',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ],
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 1;
+                          });
+                        },
+                        child: Text(
+                          'minutes',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 1
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            unitSelected = 2;
+                          });
+                        },
+                        child: Text(
+                          'hours',
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: unitSelected == 2
+                                  ? FontWeight.bold
+                                  : FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: 10),
             ],
           ),
         ),
@@ -192,7 +342,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FlatButton(
             onPressed: () {
               setState(() {
-                showTaskDialog = false;
+                showCreateTaskDialog = false;
               });
             },
             child: const Text('Cancel'),
@@ -201,9 +351,13 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               setState(() {
                 print('Added task');
-                tasks.add(Task(0, '${taskTextController.text}',
-                    int.parse(quantityTextController.text), radioValue, false));
-                showTaskDialog = false;
+                tasks.add(Task(
+                    tasks.length,
+                    '${taskTextController.text}',
+                    int.parse(quantityTextController.text),
+                    unitSelected,
+                    false));
+                showCreateTaskDialog = false;
               });
             },
             child: const Text('Add'),
