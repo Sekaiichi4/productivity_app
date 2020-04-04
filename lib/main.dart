@@ -103,13 +103,49 @@ class _MyHomePageState extends State<MyHomePage> {
               itemBuilder: (BuildContext context, int index) {
                 final Task currentTask = tasks[index];
                 return Card(
-                  child: ListTile(
-                    title: Text('${currentTask.name}'),
-                    trailing: Text(
-                        '${currentTask.quantity} ${getUnitName(currentTask.unit)}'),
-                    onTap: () {
-                      openEditTaskDialog(currentTask);
-                    },
+                  child: Container(
+                    height: 100,
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          title: Text('${currentTask.name}'),
+                          onTap: () {
+                            openEditTaskDialog(currentTask);
+                          },
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                color: Colors.greenAccent,
+                                child: IconButton(
+                                  icon: Icon(Icons.remove),
+                                  onPressed: () {
+                                    setState(() {
+                                      tasks[index].quantity--;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Text(
+                                  '${currentTask.quantity} ${getUnitName(currentTask.unit)}'),
+                              Container(
+                                color: Colors.redAccent,
+                                child: IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () {
+                                    setState(() {
+                                      tasks[index].quantity++;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
