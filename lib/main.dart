@@ -1,6 +1,19 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
+import 'task.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Hive Database pre-setup
+  final Directory appDocumentDirectory =
+      await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  Hive.registerAdapter(TaskAdapter());
+
   runApp(MyApp());
 }
 
@@ -44,6 +57,48 @@ class _MyHomePageState extends State<MyHomePage> {
   //------------
   //--METHODS
   //------------
+  void getTasks() async {
+    final Box<Task> tasksBox = await Hive.openBox<Task>('tasks');
+    final List<Task> newList = <Task>[];
+
+    for (int i = 0; i < tasksBox.length; i++) {
+      newList.add(tasksBox.getAt(i));
+    }
+
+    setState(() {
+      tasks = newList;
+    });
+  }
+
+  Future<void> _addTask(Task task) async {
+    await Hive.box<Task>('tasks').add(task);
+    getTasks();
+  }
+
+  Future<void> _updateTask(
+    Task task,
+    int index,
+  ) async {
+    await Hive.box<Task>('tasks').putAt(index, task);
+    getTasks();
+  }
+
+  Future<void> _deleteTask(
+    int index,
+  ) async {
+    tasks.removeAt(index);
+    Hive.box<Task>('tasks').deleteAt(index);
+    fixTaskIndicesAfter(index);
+  }
+
+  void fixTaskIndicesAfter(int index) async {
+    for (int i = index; i < tasks.length; i++) {
+      tasks[i].id = i;
+      await Hive.box<Task>('tasks').putAt(i, tasks[i]);
+    }
+    getTasks();
+  }
+
   void openCreateTaskDialog() {
     if (!showCreateTaskDialog) {
       setState(() {
@@ -79,6 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    getTasks();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       children: <Widget>[
                         ListTile(
-                          title: Text('${currentTask.name}'),
+                          title: Text('${currentTask.id} ${currentTask.name}'),
                           onTap: () {
                             openEditTaskDialog(currentTask);
                           },
@@ -124,6 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   onPressed: () {
                                     setState(() {
                                       tasks[index].quantity--;
+                                      _updateTask(
+                                          tasks[index], tasks[index].id);
                                     });
                                   },
                                 ),
@@ -137,6 +200,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   onPressed: () {
                                     setState(() {
                                       tasks[index].quantity++;
+                                      _updateTask(
+                                          tasks[index], tasks[index].id);
                                     });
                                   },
                                 ),
@@ -258,6 +323,16 @@ class _MyHomePageState extends State<MyHomePage> {
           FlatButton(
             onPressed: () {
               setState(() {
+                print('Deleted Task');
+                _deleteTask(selectedTask.id);
+                showEditTaskDialog = false;
+              });
+            },
+            child: const Text('Delete'),
+          ),
+          FlatButton(
+            onPressed: () {
+              setState(() {
                 showEditTaskDialog = false;
               });
             },
@@ -266,14 +341,16 @@ class _MyHomePageState extends State<MyHomePage> {
           FlatButton(
             onPressed: () {
               setState(() {
-                print('Added task');
+                print('Edited Task');
                 tasks[selectedTask.id] = Task(
                     selectedTask.id,
                     '${taskTextController.text}',
                     int.parse(quantityTextController.text),
                     unitSelected,
-                    false);
+                    selectedTask.cleared,
+                    selectedTask.repeatingDays);
                 showEditTaskDialog = false;
+                _updateTask(tasks[selectedTask.id], selectedTask.id);
               });
             },
             child: const Text('Edit'),
@@ -387,13 +464,16 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               setState(() {
                 print('Added task');
-                tasks.add(Task(
+                final Task newTask = Task(
                     tasks.length,
                     '${taskTextController.text}',
                     int.parse(quantityTextController.text),
                     unitSelected,
-                    false));
+                    false,
+                    0000000);
+                tasks.add(newTask);
                 showCreateTaskDialog = false;
+                _addTask(newTask);
               });
             },
             child: const Text('Add'),
@@ -402,20 +482,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-class Task {
-  Task(this.id, this.name, this.quantity, this.unit, this.cleared);
-
-  int id;
-  //name of the task
-  String name;
-  //How much of this task needs to be done
-  int quantity;
-  //0 times, 1 minutes, 2 hours
-  int unit;
-  //task cleared for today
-  bool cleared;
-  //repeating days in binary representation MTWTFSS, 1000000 = only monday.
-  int repeatingDays;
 }
