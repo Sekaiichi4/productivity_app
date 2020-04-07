@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController taskTextController = TextEditingController();
   TextEditingController quantityTextController = TextEditingController();
   int unitSelected;
-  List<bool> daysToRepeat;
+  List<bool> daysToRepeat = <bool>[];
 
   //------------
   //--METHODS
@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String getRepeatingDaysInBinary() {
     String days = '';
 
-    for (int i = 0; i < daysToRepeat.length; i++) {
+    for (int i = 0; i < 7; i++) {
       if (daysToRepeat[i]) {
         days += '1';
       } else {
@@ -156,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<bool> getRepeatingDaysInList(String daysInString) {
     final List<bool> days = <bool>[];
 
-    for (int i = 0; i < daysToRepeat.length; i++) {
+    for (int i = 0; i < 7; i++) {
       if (daysInString.substring(i, i + 1) == '1') {
         days.add(true);
       } else {
