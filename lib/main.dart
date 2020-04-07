@@ -44,6 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
   //------------
   //--VARIABLES
   //------------
+  DateTime today;
+  int dayOffset;
   List<Task> tasks = <Task>[];
   Task selectedTask;
 
@@ -165,8 +167,44 @@ class _MyHomePageState extends State<MyHomePage> {
     return days;
   }
 
+  String getTodayInString() {
+    String todayName = '';
+
+    today = DateTime.now().add(Duration(days: dayOffset));
+
+    switch (today.weekday) {
+      case 1:
+        todayName += 'Monday ';
+        break;
+      case 2:
+        todayName += 'Tuesday ';
+        break;
+      case 3:
+        todayName += 'Wednesday ';
+        break;
+      case 4:
+        todayName += 'Thursday ';
+        break;
+      case 5:
+        todayName += 'Friday ';
+        break;
+      case 6:
+        todayName += 'Saturday ';
+        break;
+      case 7:
+        todayName += 'Sunday ';
+        break;
+    }
+
+    todayName += '${today.day}-${today.month}-${today.year}';
+
+    return todayName;
+  }
+
   @override
   void initState() {
+    today = DateTime.now();
+    dayOffset = 0;
     getTasks();
     super.initState();
   }
@@ -175,7 +213,37 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(widget.title)),
+        title: Center(
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.arrow_left),
+              color: dayOffset != 0 ? Colors.white : Colors.blue,
+              onPressed: () {
+                //
+                if (dayOffset != 0) {
+                  setState(() {
+                    dayOffset--;
+                  });
+                }
+              },
+            ),
+            Text(getTodayInString()),
+            IconButton(
+              icon: Icon(Icons.arrow_right),
+              color: dayOffset != 6 ? Colors.white : Colors.blue,
+              onPressed: () {
+                //
+                if (dayOffset != 6) {
+                  setState(() {
+                    dayOffset++;
+                  });
+                }
+              },
+            ),
+          ],
+        )),
       ),
       body: Center(
         child: Stack(
