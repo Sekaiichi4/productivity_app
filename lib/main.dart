@@ -53,11 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController taskTextController = TextEditingController();
   TextEditingController quantityTextController = TextEditingController();
   int unitSelected;
+  List<bool> daysToRepeat;
 
   //------------
   //--METHODS
   //------------
   void getTasks() async {
+    // Hive.deleteBoxFromDisk('task');
     final Box<Task> tasksBox = await Hive.openBox<Task>('tasks');
     final List<Task> newList = <Task>[];
 
@@ -105,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         taskTextController.clear();
         quantityTextController.clear();
         unitSelected = 0;
+        daysToRepeat = <bool>[true, true, true, true, true, true, true];
         showCreateTaskDialog = true;
       });
     }
@@ -118,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
         quantityTextController.text = currentTask.quantity.toString();
         unitSelected = currentTask.unit;
         showEditTaskDialog = true;
+        daysToRepeat = getRepeatingDaysInList(currentTask.repeatingDays);
       });
     }
   }
@@ -131,6 +135,34 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return 'hours';
     }
+  }
+
+  String getRepeatingDaysInBinary() {
+    String days = '';
+
+    for (int i = 0; i < daysToRepeat.length; i++) {
+      if (daysToRepeat[i]) {
+        days += '1';
+      } else {
+        days += '0';
+      }
+    }
+    print('REPEATING DAYS BINARY IS $days');
+    return days;
+  }
+
+  List<bool> getRepeatingDaysInList(String daysInString) {
+    final List<bool> days = <bool>[];
+
+    for (int i = 0; i < daysToRepeat.length; i++) {
+      if (daysInString.substring(i, i + 1) == '1') {
+        days.add(true);
+      } else {
+        days.add(false);
+      }
+    }
+
+    return days;
   }
 
   @override
@@ -169,7 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       children: <Widget>[
                         ListTile(
-                          title: Text('${currentTask.id} ${currentTask.name}'),
+                          title: Text(
+                              '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
                           onTap: () {
                             openEditTaskDialog(currentTask);
                           },
@@ -316,6 +349,136 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[0] = !daysToRepeat[0];
+                        });
+                      },
+                      child: Text(
+                        'M',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[0]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[1] = !daysToRepeat[1];
+                        });
+                      },
+                      child: Text(
+                        'T',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[1]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[2] = !daysToRepeat[2];
+                        });
+                      },
+                      child: Text(
+                        'W',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[2]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[3] = !daysToRepeat[3];
+                        });
+                      },
+                      child: Text(
+                        'T',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[3]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[4] = !daysToRepeat[4];
+                        });
+                      },
+                      child: Text(
+                        'F',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[4]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[5] = !daysToRepeat[5];
+                        });
+                      },
+                      child: Text(
+                        'S',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[5]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[6] = !daysToRepeat[6];
+                        });
+                      },
+                      child: Text(
+                        'S',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[6]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -348,7 +511,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     int.parse(quantityTextController.text),
                     unitSelected,
                     selectedTask.cleared,
-                    selectedTask.repeatingDays);
+                    getRepeatingDaysInBinary());
                 showEditTaskDialog = false;
                 _updateTask(tasks[selectedTask.id], selectedTask.id);
               });
@@ -448,6 +611,136 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[0] = !daysToRepeat[0];
+                        });
+                      },
+                      child: Text(
+                        'M',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[0]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[1] = !daysToRepeat[1];
+                        });
+                      },
+                      child: Text(
+                        'T',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[1]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[2] = !daysToRepeat[2];
+                        });
+                      },
+                      child: Text(
+                        'W',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[2]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[3] = !daysToRepeat[3];
+                        });
+                      },
+                      child: Text(
+                        'T',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[3]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[4] = !daysToRepeat[4];
+                        });
+                      },
+                      child: Text(
+                        'F',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[4]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[5] = !daysToRepeat[5];
+                        });
+                      },
+                      child: Text(
+                        'S',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[5]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          daysToRepeat[6] = !daysToRepeat[6];
+                        });
+                      },
+                      child: Text(
+                        'S',
+                        style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: daysToRepeat[6]
+                                ? FontWeight.bold
+                                : FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -470,7 +763,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     int.parse(quantityTextController.text),
                     unitSelected,
                     false,
-                    0000000);
+                    getRepeatingDaysInBinary());
                 tasks.add(newTask);
                 showCreateTaskDialog = false;
                 _addTask(newTask);

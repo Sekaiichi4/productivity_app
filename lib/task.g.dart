@@ -22,7 +22,7 @@ class TaskAdapter extends TypeAdapter<Task> {
       fields[2] as int,
       fields[3] as int,
       fields[4] as bool,
-      fields[5] as int,
+      fields[5] as String,
     );
   }
 

@@ -22,5 +22,5 @@ class Task extends HiveObject {
   bool cleared;
   //repeating days in binary representation MTWTFSS, 1000000 = only monday.
   @HiveField(5)
-  int repeatingDays;
+  String repeatingDays;
 }
