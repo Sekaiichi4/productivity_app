@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'task.dart';
 
@@ -44,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //------------
   //--VARIABLES
   //------------
+  SharedPreferences prefs;
   DateTime today;
   int currentWeekDay;
   int dayOffset;
@@ -72,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       tasks = newList;
+      checkTodayForReset();
     });
   }
 
@@ -100,6 +103,36 @@ class _MyHomePageState extends State<MyHomePage> {
     for (int i = index; i < tasks.length; i++) {
       tasks[i].id = i;
       await Hive.box<Task>('tasks').putAt(i, tasks[i]);
+    }
+    getTasks();
+  }
+
+  void updateTaskWithoutGetting(
+    Task task,
+    int index,
+  ) async {
+    await Hive.box<Task>('tasks').putAt(index, task);
+  }
+
+  void checkTodayForReset() async {
+    prefs = await SharedPreferences.getInstance();
+
+    // prefs.setString('today', today.toString().substring(0, 10));
+    if (today.toString().substring(0, 10) != '${prefs.getString('today')}') {
+      // if (today.toString().substring(0, 10) != 'a') {
+      print('new day');
+      prefs.setString('today', today.toString().substring(0, 10));
+      resetAllTasks();
+    } else {
+      print('same day');
+    }
+  }
+
+  void resetAllTasks() {
+    print('resetting tasks with a length of ${tasks.length}');
+    for (int i = 0; i < tasks.length; i++) {
+      tasks[i].currentQuantity = tasks[i].quantity;
+      updateTaskWithoutGetting(tasks[i], i);
     }
     getTasks();
   }
