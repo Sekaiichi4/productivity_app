@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //--VARIABLES
   //------------
   DateTime today;
+  int currentWeekDay;
   int dayOffset;
   List<Task> tasks = <Task>[];
   Task selectedTask;
@@ -175,24 +176,31 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (today.weekday) {
       case 1:
         todayName += 'Monday ';
+        currentWeekDay = 0;
         break;
       case 2:
         todayName += 'Tuesday ';
+        currentWeekDay = 1;
         break;
       case 3:
         todayName += 'Wednesday ';
+        currentWeekDay = 2;
         break;
       case 4:
         todayName += 'Thursday ';
+        currentWeekDay = 3;
         break;
       case 5:
         todayName += 'Friday ';
+        currentWeekDay = 4;
         break;
       case 6:
         todayName += 'Saturday ';
+        currentWeekDay = 5;
         break;
       case 7:
         todayName += 'Sunday ';
+        currentWeekDay = 6;
         break;
     }
 
@@ -263,57 +271,66 @@ class _MyHomePageState extends State<MyHomePage> {
           ? ListView.separated(
               itemBuilder: (BuildContext context, int index) {
                 final Task currentTask = tasks[index];
-                return Card(
-                  child: Container(
-                    height: 100,
-                    child: Column(
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(
-                              '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
-                          onTap: () {
-                            openEditTaskDialog(currentTask);
-                          },
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                return currentTask.repeatingDays
+                            .substring(currentWeekDay, currentWeekDay + 1) ==
+                        '0'
+                    ? null
+                    : Card(
+                        child: Container(
+                          height: dayOffset != 0 ? 56 : 100,
+                          child: Column(
                             children: <Widget>[
-                              Container(
-                                color: Colors.greenAccent,
-                                child: IconButton(
-                                  icon: Icon(Icons.remove),
-                                  onPressed: () {
-                                    setState(() {
-                                      tasks[index].quantity--;
-                                      _updateTask(
-                                          tasks[index], tasks[index].id);
-                                    });
-                                  },
-                                ),
+                              ListTile(
+                                title: Text(
+                                    '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
+                                onTap: () {
+                                  openEditTaskDialog(currentTask);
+                                },
                               ),
-                              Text(
-                                  '${currentTask.quantity} ${getUnitName(currentTask.unit)}'),
-                              Container(
-                                color: Colors.redAccent,
-                                child: IconButton(
-                                  icon: Icon(Icons.add),
-                                  onPressed: () {
-                                    setState(() {
-                                      tasks[index].quantity++;
-                                      _updateTask(
-                                          tasks[index], tasks[index].id);
-                                    });
-                                  },
+                              if (dayOffset == 0)
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                        color: Colors.greenAccent,
+                                        child: IconButton(
+                                          icon: Icon(Icons.remove),
+                                          onPressed: () {
+                                            setState(() {
+                                              if (tasks[index].currentQuantity >
+                                                  0) {
+                                                tasks[index].currentQuantity--;
+                                                _updateTask(tasks[index],
+                                                    tasks[index].id);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Text(
+                                          '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                                      Container(
+                                        color: Colors.redAccent,
+                                        child: IconButton(
+                                          icon: Icon(Icons.add),
+                                          onPressed: () {
+                                            setState(() {
+                                              tasks[index].currentQuantity++;
+                                              _updateTask(tasks[index],
+                                                  tasks[index].id);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
+                      );
               },
               separatorBuilder: (BuildContext context, int index) =>
                   const Divider(),
@@ -579,7 +596,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     int.parse(quantityTextController.text),
                     unitSelected,
                     selectedTask.cleared,
-                    getRepeatingDaysInBinary());
+                    getRepeatingDaysInBinary(),
+                    selectedTask.currentQuantity);
                 showEditTaskDialog = false;
                 _updateTask(tasks[selectedTask.id], selectedTask.id);
               });
@@ -831,7 +849,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     int.parse(quantityTextController.text),
                     unitSelected,
                     false,
-                    getRepeatingDaysInBinary());
+                    getRepeatingDaysInBinary(),
+                    int.parse(quantityTextController.text));
                 tasks.add(newTask);
                 showCreateTaskDialog = false;
                 _addTask(newTask);

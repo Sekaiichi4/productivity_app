@@ -4,7 +4,8 @@ part 'task.g.dart';
 
 @HiveType(typeId: 0)
 class Task extends HiveObject {
-  Task(this.id, this.name, this.quantity, this.unit, this.cleared, this.repeatingDays);
+  Task(this.id, this.name, this.quantity, this.unit, this.cleared,
+      this.repeatingDays, this.currentQuantity);
 
   @HiveField(0)
   int id;
@@ -23,4 +24,7 @@ class Task extends HiveObject {
   //repeating days in binary representation MTWTFSS, 1000000 = only monday.
   @HiveField(5)
   String repeatingDays;
+  //The current value that todays task has out of the maximum.
+  @HiveField(6)
+  int currentQuantity;
 }
