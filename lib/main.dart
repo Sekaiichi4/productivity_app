@@ -48,8 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   SharedPreferences prefs;
   DateTime today;
   int currentWeekDay;
-  int dayOffset;
+  int dayOffset = 0;
   List<Task> tasks = <Task>[];
+  // List<Task> filteredTasks = <Task>[];
   Task selectedTask;
 
   //Task Creator Screen
@@ -72,10 +73,26 @@ class _MyHomePageState extends State<MyHomePage> {
       newList.add(tasksBox.getAt(i));
     }
 
-    setState(() {
-      tasks = newList;
-      checkTodayForReset();
-    });
+    // setState(() {
+    tasks = newList;
+    checkTodayForReset();
+    // });
+  }
+
+  Future<List<Task>> _filterTasks() async {
+    // Hive.deleteBoxFromDisk('task');
+    final List<Task> newList = <Task>[];
+
+    for (int i = 0; i < tasks.length; i++) {
+      if (tasks[i]
+              .repeatingDays
+              .substring(currentWeekDay, currentWeekDay + 1) !=
+          '0') {
+        newList.add(tasks[i]);
+      }
+    }
+
+    return newList;
   }
 
   Future<void> _addTask(Task task) async {
@@ -124,7 +141,9 @@ class _MyHomePageState extends State<MyHomePage> {
       prefs.setString('today', today.toString().substring(0, 10));
       resetAllTasks();
     } else {
-      print('same day');
+      setState(() {
+        print('same day');
+      });
     }
   }
 
@@ -245,7 +264,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     today = DateTime.now();
-    dayOffset = 0;
     getTasks();
     super.initState();
   }
@@ -300,77 +318,84 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget homeScreen() {
     return Scaffold(
-      body: tasks.isNotEmpty
-          ? ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                final Task currentTask = tasks[index];
-                return currentTask.repeatingDays
-                            .substring(currentWeekDay, currentWeekDay + 1) ==
-                        '0'
-                    ? null
-                    : Card(
-                        child: Container(
-                          height: dayOffset != 0 ? 56 : 100,
-                          child: Column(
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(
-                                    '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
-                                onTap: () {
-                                  openEditTaskDialog(currentTask);
-                                },
-                              ),
-                              if (dayOffset == 0)
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                        color: Colors.greenAccent,
-                                        child: IconButton(
-                                          icon: Icon(Icons.remove),
-                                          onPressed: () {
-                                            setState(() {
-                                              if (tasks[index].currentQuantity >
-                                                  0) {
-                                                tasks[index].currentQuantity--;
+      body: FutureBuilder<List<Task>>(
+          future: _filterTasks(),
+          builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return snapshot.data.isEmpty
+                  ? const Center(
+                      child: Text('Nothing to do today... Great!'),
+                    )
+                  : ListView.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        final Task currentTask = snapshot.data[index];
+                        return Card(
+                          child: Container(
+                            height: dayOffset != 0 ? 56 : 100,
+                            child: Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text(
+                                      // '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
+                                      '${currentTask.name}'),
+                                  onTap: () {
+                                    openEditTaskDialog(currentTask);
+                                  },
+                                ),
+                                if (dayOffset == 0)
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                          color: Colors.greenAccent,
+                                          child: IconButton(
+                                            icon: Icon(Icons.remove),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (tasks[index]
+                                                        .currentQuantity >
+                                                    0) {
+                                                  tasks[index]
+                                                      .currentQuantity--;
+                                                  _updateTask(tasks[index],
+                                                      tasks[index].id);
+                                                }
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        Text(
+                                            '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                                        Container(
+                                          color: Colors.redAccent,
+                                          child: IconButton(
+                                            icon: Icon(Icons.add),
+                                            onPressed: () {
+                                              setState(() {
+                                                tasks[index].currentQuantity++;
                                                 _updateTask(tasks[index],
                                                     tasks[index].id);
-                                              }
-                                            });
-                                          },
+                                              });
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                          '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
-                                      Container(
-                                        color: Colors.redAccent,
-                                        child: IconButton(
-                                          icon: Icon(Icons.add),
-                                          onPressed: () {
-                                            setState(() {
-                                              tasks[index].currentQuantity++;
-                                              _updateTask(tasks[index],
-                                                  tasks[index].id);
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-              itemCount: tasks.length)
-          : const Center(
-              child: Text('Nothing to do... Great!'),
-            ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                      itemCount: snapshot.data.length);
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: openCreateTaskDialog,
         tooltip: 'Add Task',
