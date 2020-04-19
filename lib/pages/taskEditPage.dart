@@ -45,7 +45,9 @@ class _TaskEditPageState extends State<TaskEditPage> {
             newUnit,
             widget.currentTask.cleared,
             newRepeatingDays,
-            widget.currentTask.currentQuantity),
+            widget.currentTask.currentQuantity > newQuantity
+                ? newQuantity
+                : widget.currentTask.currentQuantity),
         widget.currentTask.id);
 
     Navigator.pop(context);

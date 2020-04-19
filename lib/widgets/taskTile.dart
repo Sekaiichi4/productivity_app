@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:productivity_helper/models/task.dart';
 import 'package:productivity_helper/models/taskData.dart';
 import 'package:productivity_helper/pages/taskViewPage.dart';
+import 'package:productivity_helper/pages/taskTimerPage.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -108,8 +109,31 @@ class TaskTile extends StatelessWidget {
                       child: Container(
                         color: Colors.grey.shade200,
                         child: Center(
-                          child: Text(
-                              '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                  '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                              if (currentTask.unit == 1)
+                                IconButton(
+                                  splashColor: Colors.transparent,
+                                  icon: Icon(Icons.play_arrow),
+                                  onPressed: () {
+                                    print('start timer');
+                                    Provider.of<TaskData>(context,
+                                            listen: false)
+                                        .setActiveTask(
+                                            filteredTasks[tileIndex].id);
+
+                                    Navigator.push<dynamic>(context,
+                                        MaterialPageRoute<dynamic>(
+                                            builder: (BuildContext context) {
+                                      return const TaskTimerPage();
+                                    }));
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
