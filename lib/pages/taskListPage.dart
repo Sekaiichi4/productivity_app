@@ -17,7 +17,7 @@ class _TaskListPageState extends State<TaskListPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   bool isCreatingTask = false;
 
-    @override
+  @override
   void initState() {
     today = DateTime.now();
     super.initState();
@@ -133,13 +133,15 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.blue, width: 4),
       ),
-      height: 308,
-      child: Padding(
+      height: height / 2 > 308 ? 308 : height / 2,
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -210,7 +212,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         });
                       },
                       child: Text(
-                        'hours',
+                        'sets',
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: unit == 2
@@ -353,32 +355,41 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 ),
               ],
             ),
-            FlatButton(
-              color: Colors.blue,
-              onPressed: () {
-                setState(() {
-                  name = nameController.text;
-                  quantity = int.parse(quantityController.text);
-                  repeatingDays = getRepeatingDaysInBinary(daysToRepeat);
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                FlatButton(
+                  color: Colors.blueGrey,
+                  onPressed: () {
+                    setState(() {
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text('Cancel'),
+                ),
+                FlatButton(
+                  color: Colors.blue,
+                  onPressed: () {
+                    setState(() {
+                      name = nameController.text;
+                      quantity = int.parse(quantityController.text);
+                      repeatingDays = getRepeatingDaysInBinary(daysToRepeat);
 
-                  if (name == null) {
-                    print('Please enter a name.');
-                    return;
-                  }
+                      if (name == null) {
+                        print('Please enter a name.');
+                        return;
+                      }
 
-                  Provider.of<TaskData>(context, listen: false).addTask(Task(
-                      tasks.length,
-                      name,
-                      quantity,
-                      unit,
-                      false,
-                      repeatingDays,
-                      quantity));
+                      Provider.of<TaskData>(context, listen: false).addTask(
+                          Task(tasks.length, name, quantity, unit, false,
+                              repeatingDays, quantity));
 
-                  Navigator.pop(context);
-                });
-              },
-              child: const Text('Create'),
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text('Create'),
+                ),
+              ],
             ),
           ],
         ),

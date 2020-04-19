@@ -3,6 +3,7 @@ import 'package:productivity_helper/models/task.dart';
 import 'package:productivity_helper/models/taskData.dart';
 import 'package:productivity_helper/pages/taskViewPage.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../globals.dart';
 
@@ -17,74 +18,103 @@ class TaskTile extends StatelessWidget {
       builder: (BuildContext context, TaskData taskData, child) {
         final Task currentTask = taskData.getTask(filteredTasks[tileIndex].id);
 
-        return Card(
-          child: Container(
-            height: dayOffset != 0 ? 56 : 100,
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                      // '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
-                      '${currentTask.name}'),
-                  onTap: () {
-                    // openEditTaskDialog(currentTask);
-                    print('Tapped on task with index $tileIndex');
-                    Provider.of<TaskData>(context, listen: false)
-                        .setActiveTask(filteredTasks[tileIndex].id);
+        return Slidable(
+          actionPane: const SlidableBehindActionPane(),
+          actionExtentRatio: 0.25,
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: IconSlideAction(
+                caption: '-5',
+                color: Colors.green.shade800,
+                icon: Icons.remove,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: IconSlideAction(
+                caption: '-1',
+                color: Colors.green.shade400,
+                icon: Icons.remove,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity--;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
+            ),
+          ],
+          secondaryActions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: IconSlideAction(
+                caption: '+1',
+                color: Colors.red.shade400,
+                icon: Icons.add,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity++;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: IconSlideAction(
+                caption: '+5',
+                color: Colors.red.shade800,
+                icon: Icons.add,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
+            ),
+          ],
+          child: Card(
+            child: Container(
+              height: dayOffset != 0 ? 56 : 100,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text(
+                        // '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
+                        '${currentTask.name}'),
+                    onTap: () {
+                      // openEditTaskDialog(currentTask);
+                      print('Tapped on task with index $tileIndex');
+                      Provider.of<TaskData>(context, listen: false)
+                          .setActiveTask(filteredTasks[tileIndex].id);
 
-                    Navigator.push<dynamic>(context, MaterialPageRoute<dynamic>(
-                        builder: (BuildContext context) {
-                      return const TaskViewPage();
-                    }));
-                  },
-                ),
-                if (dayOffset == 0)
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          color: Colors.greenAccent,
-                          child: IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              // setState(() {
-                              if (tasks[filteredTasks[tileIndex].id]
-                                      .currentQuantity >
-                                  0) {
-                                tasks[filteredTasks[tileIndex].id]
-                                    .currentQuantity--;
-                                Provider.of<TaskData>(context, listen: false)
-                                    .updateTask(
-                                        tasks[filteredTasks[tileIndex].id],
-                                        filteredTasks[tileIndex].id);
-                              }
-                              // });
-                            },
-                          ),
-                        ),
-                        Text(
-                            '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
-                        Container(
-                          color: Colors.redAccent,
-                          child: IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              // setState(() {
-                              tasks[filteredTasks[tileIndex].id]
-                                  .currentQuantity++;
-                              Provider.of<TaskData>(context, listen: false)
-                                  .updateTask(
-                                      tasks[filteredTasks[tileIndex].id],
-                                      filteredTasks[tileIndex].id);
-                              // });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                      Navigator.push<dynamic>(context,
+                          MaterialPageRoute<dynamic>(
+                              builder: (BuildContext context) {
+                        return const TaskViewPage();
+                      }));
+                    },
                   ),
-              ],
+                  if (dayOffset == 0)
+                    Expanded(
+                      child: Container(
+                        color: Colors.grey.shade200,
+                        child: Center(
+                          child: Text(
+                              '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );

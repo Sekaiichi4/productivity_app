@@ -19,7 +19,7 @@ String getUnitName(int unit) {
     case 1:
       return 'minutes';
     case 2:
-      return 'hours';
+      return 'sets';
   }
 }
 
