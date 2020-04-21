@@ -117,7 +117,7 @@ class TaskTile extends StatelessWidget {
                               if (currentTask.unit == 1)
                                 IconButton(
                                   splashColor: Colors.transparent,
-                                  icon: Icon(Icons.play_arrow),
+                                  icon: const Icon(Icons.play_arrow),
                                   onPressed: () {
                                     print('start timer');
                                     Provider.of<TaskData>(context,

@@ -12,7 +12,7 @@ import 'models/taskData.dart';
 void main() {
   Hive.registerAdapter<Task>(TaskAdapter());
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> _initHive() async {

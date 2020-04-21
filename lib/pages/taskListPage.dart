@@ -36,7 +36,7 @@ class _TaskListPageState extends State<TaskListPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.arrow_left),
+                icon: const Icon(Icons.arrow_left),
                 color: dayOffset != 0 ? Colors.white : Colors.blue,
                 onPressed: () {
                   //
@@ -49,7 +49,7 @@ class _TaskListPageState extends State<TaskListPage> {
               ),
               Text(getTodayInString()),
               IconButton(
-                icon: Icon(Icons.arrow_right),
+                icon: const Icon(Icons.arrow_right),
                 color: dayOffset != 6 ? Colors.white : Colors.blue,
                 onPressed: () {
                   //
@@ -104,7 +104,7 @@ class _MyFloatingActionButtonState extends State<MyFloatingActionButton> {
               });
             },
             tooltip: 'Add Task',
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           )
         : Container();
   }
@@ -212,7 +212,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         });
                       },
                       child: Text(
-                        'sets',
+                        'hours',
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: unit == 2
@@ -382,7 +382,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
                       Provider.of<TaskData>(context, listen: false).addTask(
                           Task(tasks.length, name, quantity, unit, false,
-                              repeatingDays, quantity));
+                              repeatingDays, quantity, 'Insert Memo'));
 
                       Navigator.pop(context);
                     });

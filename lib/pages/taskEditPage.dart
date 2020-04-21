@@ -20,14 +20,17 @@ class _TaskEditPageState extends State<TaskEditPage> {
   int newUnit;
   String newRepeatingDays;
   List<bool> daysToRepeat = <bool>[];
+  String newMemo;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  final TextEditingController memoController = TextEditingController();
 
   void editTask(BuildContext context) {
     newName = nameController.text;
     newQuantity = int.parse(quantityController.text);
     newRepeatingDays = getRepeatingDaysInBinary(daysToRepeat);
+    newMemo = memoController.text;
 
     if (newName == null) {
       print('Please enter a name.');
@@ -47,7 +50,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
             newRepeatingDays,
             widget.currentTask.currentQuantity > newQuantity
                 ? newQuantity
-                : widget.currentTask.currentQuantity),
+                : widget.currentTask.currentQuantity,
+            newMemo),
         widget.currentTask.id);
 
     Navigator.pop(context);
@@ -57,6 +61,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
   void initState() {
     nameController.text = widget.currentTask.name;
     quantityController.text = widget.currentTask.quantity.toString();
+    memoController.text = widget.currentTask.memo ?? '';
 
     newUnit = widget.currentTask.unit;
     daysToRepeat = getRepeatingDaysInList(widget.currentTask.repeatingDays);
@@ -70,11 +75,11 @@ class _TaskEditPageState extends State<TaskEditPage> {
       appBar: AppBar(
         title: Text(
           'Edit ${widget.currentTask.name}',
-          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             iconSize: 24.0,
             color: Colors.green,
             tooltip: 'Save',
@@ -299,6 +304,20 @@ class _TaskEditPageState extends State<TaskEditPage> {
                   ),
                 ],
               ),
+              TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.blueAccent,
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  hintText: 'Memo',
+                ),
+                controller: memoController,
+              )
             ],
           ),
         ),

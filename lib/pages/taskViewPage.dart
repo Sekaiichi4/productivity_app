@@ -84,7 +84,7 @@ class TaskViewPage extends StatelessWidget {
             ),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.create),
+                icon: const Icon(Icons.create),
                 iconSize: 24.0,
                 color: Colors.green,
                 tooltip: 'Edit',
@@ -97,7 +97,7 @@ class TaskViewPage extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 iconSize: 24.0,
                 color: Colors.red,
                 tooltip: 'Delete',
@@ -263,6 +263,38 @@ class TaskViewPage extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  Container(
+                    height: 36.0,
+                    color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        const Text(
+                          ' Memo',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        child: Text(
+                          '${currentTask.memo}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
