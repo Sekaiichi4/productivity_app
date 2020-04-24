@@ -54,6 +54,12 @@ class TaskData extends ChangeNotifier {
     print('resetting tasks with a length of ${tasks.length}');
     for (int i = 0; i < tasks.length; i++) {
       tasks[i].currentQuantity = tasks[i].quantity;
+      if (tasks[i].cleared) {
+        tasks[i].cleared = false;
+      } else {
+        tasks[i].currentStreak = 0;
+      }
+
       updateTaskWithoutGetting(tasks[i], i);
     }
     getTasks();

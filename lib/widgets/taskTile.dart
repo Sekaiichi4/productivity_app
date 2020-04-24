@@ -26,11 +26,27 @@ class TaskTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
               child: IconSlideAction(
+                closeOnTap: false,
                 caption: '-5',
                 color: Colors.green.shade800,
                 icon: Icons.remove,
                 onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                      }
+                    }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
+                  }
+
                   Provider.of<TaskData>(context, listen: false).updateTask(
                       tasks[filteredTasks[tileIndex].id],
                       filteredTasks[tileIndex].id);
@@ -40,11 +56,27 @@ class TaskTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
               child: IconSlideAction(
+                closeOnTap: false,
                 caption: '-1',
                 color: Colors.green.shade400,
                 icon: Icons.remove,
                 onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity--;
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 1) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                      }
+                    }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity--;
+                  }
+
                   Provider.of<TaskData>(context, listen: false).updateTask(
                       tasks[filteredTasks[tileIndex].id],
                       filteredTasks[tileIndex].id);
@@ -56,6 +88,7 @@ class TaskTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
               child: IconSlideAction(
+                closeOnTap: false,
                 caption: '+1',
                 color: Colors.red.shade400,
                 icon: Icons.add,
@@ -70,6 +103,7 @@ class TaskTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
               child: IconSlideAction(
+                closeOnTap: false,
                 caption: '+5',
                 color: Colors.red.shade800,
                 icon: Icons.add,
@@ -88,9 +122,16 @@ class TaskTile extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    title: Text(
-                        // '${currentTask.id} ${currentTask.name} ${currentTask.repeatingDays}'),
-                        '${currentTask.name}'),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${currentTask.name}'),
+                        Text(
+                          '${currentTask.currentStreak}',
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
                     onTap: () {
                       // openEditTaskDialog(currentTask);
                       print('Tapped on task with index $tileIndex');

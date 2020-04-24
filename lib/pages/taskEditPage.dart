@@ -51,7 +51,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
             widget.currentTask.currentQuantity > newQuantity
                 ? newQuantity
                 : widget.currentTask.currentQuantity,
-            newMemo),
+            newMemo,
+            widget.currentTask.currentStreak),
         widget.currentTask.id);
 
     Navigator.pop(context);

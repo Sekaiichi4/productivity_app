@@ -5,7 +5,7 @@ part 'task.g.dart';
 @HiveType(typeId: 0)
 class Task extends HiveObject {
   Task(this.id, this.name, this.quantity, this.unit, this.cleared,
-      this.repeatingDays, this.currentQuantity, this.memo);
+      this.repeatingDays, this.currentQuantity, this.memo, this.currentStreak);
 
   @HiveField(0)
   int id;
@@ -27,7 +27,10 @@ class Task extends HiveObject {
   //The current value that todays task has out of the maximum.
   @HiveField(6)
   int currentQuantity;
-  //Memo for the task. 
+  //Memo for the task.
   @HiveField(7)
   String memo;
+  //Current Streak value
+  @HiveField(8)
+  int currentStreak;
 }

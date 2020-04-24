@@ -20,6 +20,18 @@ class TaskTimerPage extends StatelessWidget {
           if (min != tasks[currentTask.id].currentQuantity) {
             if (sec == 0) {
               tasks[currentTask.id].currentQuantity = min;
+
+              if (min == 0) {
+                if (!tasks[currentTask.id].cleared) {
+                  tasks[currentTask.id].cleared = true;
+                  if (tasks[currentTask.id].currentStreak != null) {
+                    tasks[currentTask.id].currentStreak++;
+                  } else {
+                    tasks[currentTask.id].currentStreak = 1;
+                  }
+                }
+              }
+
               Provider.of<TaskData>(context, listen: false)
                   .updateTask(tasks[currentTask.id], currentTask.id);
             }

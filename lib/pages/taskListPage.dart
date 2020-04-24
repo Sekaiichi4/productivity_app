@@ -382,7 +382,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
                       Provider.of<TaskData>(context, listen: false).addTask(
                           Task(tasks.length, name, quantity, unit, false,
-                              repeatingDays, quantity, 'Insert Memo'));
+                              repeatingDays, quantity, 'Insert Memo', 0));
 
                       Navigator.pop(context);
                     });
