@@ -44,7 +44,7 @@ class TaskData extends ChangeNotifier {
       prefs.setString('today', realToday.toString().substring(0, 10));
       resetAllTasks();
     } else {
-      print('Last day was ${getLastWeekDay()}');
+      // print('Last day was ${getLastWeekDay()}');
       print('same day');
       notifyListeners();
     }

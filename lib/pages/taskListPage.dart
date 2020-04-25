@@ -29,6 +29,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
     return Scaffold(
       key: scaffoldKey,
+      backgroundColor: Colors.grey[850],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Center(

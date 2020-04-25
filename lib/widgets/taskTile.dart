@@ -23,163 +23,210 @@ class TaskTile extends StatelessWidget {
           actionPane: const SlidableBehindActionPane(),
           actionExtentRatio: 0.25,
           actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-              child: IconSlideAction(
-                closeOnTap: false,
-                caption: '-5',
-                color: Colors.green.shade800,
-                icon: Icons.remove,
-                onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+            IconSlideAction(
+              caption: '-10',
+              color: Colors.green.shade800,
+              icon: Icons.remove,
+              onTap: () {
+                if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 10) {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
 
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                      }
+                  if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                    tasks[filteredTasks[tileIndex].id].cleared = true;
+                    if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                        null) {
+                      tasks[filteredTasks[tileIndex].id].currentStreak++;
+                    } else {
+                      tasks[filteredTasks[tileIndex].id].currentStreak = 1;
                     }
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
                   }
+                } else {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 10;
+                }
 
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
-                },
-              ),
+                Provider.of<TaskData>(context, listen: false).updateTask(
+                    tasks[filteredTasks[tileIndex].id],
+                    filteredTasks[tileIndex].id);
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-              child: IconSlideAction(
-                closeOnTap: false,
-                caption: '-1',
-                color: Colors.green.shade400,
-                icon: Icons.remove,
-                onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 1) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+            IconSlideAction(
+              caption: '-5',
+              color: Colors.green.shade600,
+              icon: Icons.remove,
+              onTap: () {
+                if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
 
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                      }
+                  if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                    tasks[filteredTasks[tileIndex].id].cleared = true;
+                    if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                        null) {
+                      tasks[filteredTasks[tileIndex].id].currentStreak++;
+                    } else {
+                      tasks[filteredTasks[tileIndex].id].currentStreak = 1;
                     }
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity--;
                   }
+                } else {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
+                }
 
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
-                },
-              ),
+                Provider.of<TaskData>(context, listen: false).updateTask(
+                    tasks[filteredTasks[tileIndex].id],
+                    filteredTasks[tileIndex].id);
+              },
             ),
           ],
           secondaryActions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-              child: IconSlideAction(
-                closeOnTap: false,
-                caption: '+1',
-                color: Colors.red.shade400,
-                icon: Icons.add,
-                onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity++;
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
-                },
-              ),
+            IconSlideAction(
+              caption: '+5',
+              color: Colors.red.shade600,
+              icon: Icons.add,
+              onTap: () {
+                tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
+                Provider.of<TaskData>(context, listen: false).updateTask(
+                    tasks[filteredTasks[tileIndex].id],
+                    filteredTasks[tileIndex].id);
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-              child: IconSlideAction(
-                closeOnTap: false,
-                caption: '+5',
-                color: Colors.red.shade800,
-                icon: Icons.add,
-                onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
-                },
-              ),
+            IconSlideAction(
+              caption: '+10',
+              color: Colors.red.shade800,
+              icon: Icons.add,
+              onTap: () {
+                tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
+                Provider.of<TaskData>(context, listen: false).updateTask(
+                    tasks[filteredTasks[tileIndex].id],
+                    filteredTasks[tileIndex].id);
+              },
             ),
           ],
-          child: Card(
-            child: Container(
-              height: dayOffset != 0 ? 56 : 100,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('${currentTask.name}'),
-                        Text(
-                          '${currentTask.currentStreak}',
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
+          child: Container(
+            color: Colors.white,
+            height: dayOffset != 0 ? 56 : 100,
+            child: Row(
+              children: <Widget>[
+                if (dayOffset == 0)
+                  Container(
+                    width: 40,
+                    child: IconSlideAction(
+                      color: Colors.green.shade400,
+                      icon: Icons.remove,
+                      onTap: () {
+                        if (tasks[filteredTasks[tileIndex].id]
+                                .currentQuantity <=
+                            1) {
+                          tasks[filteredTasks[tileIndex].id].currentQuantity =
+                              0;
+
+                          if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                            tasks[filteredTasks[tileIndex].id].cleared = true;
+                            if (tasks[filteredTasks[tileIndex].id]
+                                    .currentStreak !=
+                                null) {
+                              tasks[filteredTasks[tileIndex].id]
+                                  .currentStreak++;
+                            } else {
+                              tasks[filteredTasks[tileIndex].id].currentStreak =
+                                  1;
+                            }
+                          }
+                        } else {
+                          tasks[filteredTasks[tileIndex].id].currentQuantity--;
+                        }
+
+                        Provider.of<TaskData>(context, listen: false)
+                            .updateTask(tasks[filteredTasks[tileIndex].id],
+                                filteredTasks[tileIndex].id);
+                      },
                     ),
-                    onTap: () {
-                      // openEditTaskDialog(currentTask);
-                      print('Tapped on task with index $tileIndex');
-                      Provider.of<TaskData>(context, listen: false)
-                          .setActiveTask(filteredTasks[tileIndex].id);
-
-                      Navigator.push<dynamic>(context,
-                          MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) {
-                        return const TaskViewPage();
-                      }));
-                    },
                   ),
-                  if (dayOffset == 0)
-                    Expanded(
-                      child: Container(
-                        color: Colors.grey.shade200,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                  '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
-                              if (currentTask.unit == 1)
-                                IconButton(
-                                  splashColor: Colors.transparent,
-                                  icon: const Icon(Icons.play_arrow),
-                                  onPressed: () {
-                                    print('start timer');
-                                    Provider.of<TaskData>(context,
-                                            listen: false)
-                                        .setActiveTask(
-                                            filteredTasks[tileIndex].id);
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                                child: Text(
+                              '${currentTask.name}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                            Container(
+                              width: 20,
+                              child: Text(
+                                '${currentTask.currentStreak}',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          // openEditTaskDialog(currentTask);
+                          print('Tapped on task with index $tileIndex');
+                          Provider.of<TaskData>(context, listen: false)
+                              .setActiveTask(filteredTasks[tileIndex].id);
 
-                                    Navigator.push<dynamic>(context,
-                                        MaterialPageRoute<dynamic>(
-                                            builder: (BuildContext context) {
-                                      return const TaskTimerPage();
-                                    }));
-                                  },
-                                ),
-                            ],
+                          Navigator.push<dynamic>(context,
+                              MaterialPageRoute<dynamic>(
+                                  builder: (BuildContext context) {
+                            return const TaskViewPage();
+                          }));
+                        },
+                      ),
+                      if (dayOffset == 0)
+                        Expanded(
+                          child: Container(
+                            color: Colors.grey.shade200,
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                      '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
+                                  if (currentTask.unit == 1)
+                                    IconButton(
+                                      splashColor: Colors.transparent,
+                                      icon: const Icon(Icons.play_arrow),
+                                      onPressed: () {
+                                        print('start timer');
+                                        Provider.of<TaskData>(context,
+                                                listen: false)
+                                            .setActiveTask(
+                                                filteredTasks[tileIndex].id);
+
+                                        Navigator.push<dynamic>(context,
+                                            MaterialPageRoute<dynamic>(builder:
+                                                (BuildContext context) {
+                                          return const TaskTimerPage();
+                                        }));
+                                      },
+                                    ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                    ],
+                  ),
+                ),
+                if (dayOffset == 0)
+                  Container(
+                    width: 40,
+                    child: IconSlideAction(
+                      color: Colors.red.shade400,
+                      foregroundColor: Colors.black,
+                      icon: Icons.add,
+                      onTap: () {
+                        tasks[filteredTasks[tileIndex].id].currentQuantity++;
+                        Provider.of<TaskData>(context, listen: false)
+                            .updateTask(tasks[filteredTasks[tileIndex].id],
+                                filteredTasks[tileIndex].id);
+                      },
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         );
