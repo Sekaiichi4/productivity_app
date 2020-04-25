@@ -44,6 +44,7 @@ class TaskData extends ChangeNotifier {
       prefs.setString('today', realToday.toString().substring(0, 10));
       resetAllTasks();
     } else {
+      print('Last day was ${getLastWeekDay()}');
       print('same day');
       notifyListeners();
     }
@@ -57,9 +58,13 @@ class TaskData extends ChangeNotifier {
       if (tasks[i].cleared) {
         tasks[i].cleared = false;
       } else {
-        tasks[i].currentStreak = 0;
+        if (tasks[i]
+                .repeatingDays
+                .substring(getLastWeekDay(), getLastWeekDay() + 1) !=
+            '0') {
+          tasks[i].currentStreak = 0;
+        }
       }
-
       updateTaskWithoutGetting(tasks[i], i);
     }
     getTasks();

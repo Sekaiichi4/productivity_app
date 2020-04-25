@@ -23,6 +23,14 @@ String getUnitName(int unit) {
   }
 }
 
+int getLastWeekDay() {
+  if (currentWeekDay == 0) {
+    return 6;
+  } else {
+    return currentWeekDay - 1;
+  }
+}
+
 String getRepeatingDaysInBinary(List<bool> daysToRepeat) {
   String days = '';
 
