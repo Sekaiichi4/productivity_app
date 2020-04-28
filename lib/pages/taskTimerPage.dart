@@ -26,8 +26,20 @@ class TaskTimerPage extends StatelessWidget {
                   tasks[currentTask.id].cleared = true;
                   if (tasks[currentTask.id].currentStreak != null) {
                     tasks[currentTask.id].currentStreak++;
+                    if (tasks[currentTask.id].topStreak == null) {
+                      tasks[currentTask.id].topStreak = 1;
+                    } else if (tasks[currentTask.id].topStreak <
+                        tasks[currentTask.id].currentStreak) {
+                      tasks[currentTask.id].topStreak =
+                          tasks[currentTask.id].currentStreak;
+                    }
                   } else {
                     tasks[currentTask.id].currentStreak = 1;
+                    if (tasks[currentTask.id].topStreak == null) {
+                      tasks[currentTask.id].topStreak = 1;
+                    } else if (tasks[currentTask.id].topStreak < 1) {
+                      tasks[currentTask.id].topStreak = 1;
+                    }
                   }
                 }
               }

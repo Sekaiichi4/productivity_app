@@ -125,9 +125,38 @@ class TaskTile extends StatelessWidget {
                                 null) {
                               tasks[filteredTasks[tileIndex].id]
                                   .currentStreak++;
+
+                              //Set top streak if or if not null
+                              if (tasks[filteredTasks[tileIndex].id]
+                                      .topStreak ==
+                                  null) {
+                                tasks[filteredTasks[tileIndex].id].topStreak =
+                                    tasks[filteredTasks[tileIndex].id]
+                                        .currentStreak;
+                              } else if (tasks[filteredTasks[tileIndex].id]
+                                      .topStreak <
+                                  tasks[filteredTasks[tileIndex].id]
+                                      .currentStreak) {
+                                tasks[filteredTasks[tileIndex].id].topStreak =
+                                    tasks[filteredTasks[tileIndex].id]
+                                        .currentStreak;
+                              }
                             } else {
                               tasks[filteredTasks[tileIndex].id].currentStreak =
                                   1;
+
+                              //Set top streak if or if not null
+                              if (tasks[filteredTasks[tileIndex].id]
+                                      .topStreak ==
+                                  null) {
+                                tasks[filteredTasks[tileIndex].id].topStreak =
+                                    1;
+                              } else if (tasks[filteredTasks[tileIndex].id]
+                                      .topStreak <
+                                  1) {
+                                tasks[filteredTasks[tileIndex].id].topStreak =
+                                    1;
+                              }
                             }
                           }
                         } else {

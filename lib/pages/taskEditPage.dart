@@ -52,7 +52,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
                 ? newQuantity
                 : widget.currentTask.currentQuantity,
             newMemo,
-            widget.currentTask.currentStreak),
+            widget.currentTask.currentStreak,
+            widget.currentTask.topStreak),
         widget.currentTask.id);
 
     Navigator.pop(context);

@@ -134,7 +134,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    final double height = MediaQuery.of(context).size.height;
 
     return Container(
       decoration: BoxDecoration(
@@ -383,7 +383,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
                       Provider.of<TaskData>(context, listen: false).addTask(
                           Task(tasks.length, name, quantity, unit, false,
-                              repeatingDays, quantity, 'Insert Memo', 0));
+                              repeatingDays, quantity, 'Insert Memo', 0, 0));
 
                       Navigator.pop(context);
                     });

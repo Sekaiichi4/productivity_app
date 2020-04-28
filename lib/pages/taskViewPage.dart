@@ -269,6 +269,29 @@ class TaskViewPage extends StatelessWidget {
                     height: 36.0,
                     color: Colors.white,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Text>[
+                        const Text(
+                          ' Top streak',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0),
+                        ),
+                        Text(
+                          '${currentTask?.topStreak.toString()} ',
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 36.0,
+                    color: Colors.white,
+                    child: Row(
                       children: <Widget>[
                         const Text(
                           ' Memo',

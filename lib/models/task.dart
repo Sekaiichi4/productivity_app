@@ -5,7 +5,7 @@ part 'task.g.dart';
 @HiveType(typeId: 0)
 class Task extends HiveObject {
   Task(this.id, this.name, this.quantity, this.unit, this.cleared,
-      this.repeatingDays, this.currentQuantity, this.memo, this.currentStreak);
+      this.repeatingDays, this.currentQuantity, this.memo, this.currentStreak, this.topStreak);
 
   @HiveField(0)
   int id;
@@ -33,4 +33,7 @@ class Task extends HiveObject {
   //Current Streak value
   @HiveField(8)
   int currentStreak;
+  //Current Streak value
+  @HiveField(8)
+  int topStreak;
 }
