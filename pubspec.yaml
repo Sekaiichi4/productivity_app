@@ -1,7 +1,7 @@
 name: productivity_helper
 description: A Flutter app that will help your productivity.
 
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.5.2 <3.0.0"
