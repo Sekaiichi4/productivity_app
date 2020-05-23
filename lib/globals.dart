@@ -20,6 +20,8 @@ String getUnitName(int unit) {
       return 'minutes';
     case 2:
       return 'hours';
+    default:
+      return 'times';
   }
 }
 

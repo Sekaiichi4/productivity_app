@@ -8,6 +8,7 @@ import 'package:productivity_helper/pages/taskListPage.dart';
 import 'package:provider/provider.dart';
 
 import 'models/taskData.dart';
+import 'customColors.dart';
 
 void main() {
   Hive.registerAdapter<Task>(TaskAdapter());
@@ -34,9 +35,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Laurens App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        // theme: ThemeData(
+        // ),
         initialRoute: '/',
         routes: {
           '/': (BuildContext context) => FutureBuilder<void>(

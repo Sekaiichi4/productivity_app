@@ -5,6 +5,7 @@ import 'package:productivity_helper/widgets/taskList.dart';
 import 'package:provider/provider.dart';
 
 import '../globals.dart';
+import 'package:productivity_helper/customColors.dart' as cc;
 
 class TaskListPage extends StatefulWidget {
   const TaskListPage({Key key}) : super(key: key);
@@ -29,53 +30,92 @@ class _TaskListPageState extends State<TaskListPage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.grey[850],
+      backgroundColor: cc.black,
       appBar: AppBar(
+        elevation: 0,
         automaticallyImplyLeading: false,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.arrow_left),
-                color: dayOffset != 0 ? Colors.white : Colors.blue,
-                onPressed: () {
-                  //
-                  if (dayOffset != 0) {
-                    setState(() {
-                      dayOffset--;
-                    });
-                  }
-                },
-              ),
-              Text(getTodayInString()),
-              IconButton(
-                icon: const Icon(Icons.arrow_right),
-                color: dayOffset != 6 ? Colors.white : Colors.blue,
-                onPressed: () {
-                  //
-                  if (dayOffset != 6) {
-                    setState(() {
-                      dayOffset++;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
+        backgroundColor: cc.black,
       ),
-      body: Center(
+      body: Container(
+        color: cc.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              height: 150,
+              child: Stack(children: <Widget>[
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: cc.whiteTrans10,
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      height: 120,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.arrow_left),
+                              color:
+                                  dayOffset != 0 ? Colors.white : Colors.blue,
+                              onPressed: () {
+                                //
+                                if (dayOffset != 0) {
+                                  setState(() {
+                                    dayOffset--;
+                                  });
+                                }
+                              },
+                            ),
+                            Text(getTodayInString()),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_right),
+                              color:
+                                  dayOffset != 6 ? Colors.white : Colors.blue,
+                              onPressed: () {
+                                //
+                                if (dayOffset != 6) {
+                                  setState(() {
+                                    dayOffset++;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: Center(
+                    heightFactor: 1,
+                    child: Text(
+                      'Today',
+                      style: TextStyle(
+                          color: cc.white,
+                          fontSize: 42,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
             Expanded(
-                child: Container(
-              child: const TaskList(),
-            ))
+              child: Container(
+                color: cc.black,
+                child: const TaskList(),
+              ),
+            )
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: MyFloatingActionButton(),
     );
   }
@@ -93,6 +133,8 @@ class _MyFloatingActionButtonState extends State<MyFloatingActionButton> {
   Widget build(BuildContext context) {
     return showFab
         ? FloatingActionButton(
+            foregroundColor: cc.black,
+            backgroundColor: cc.yellow,
             onPressed: () {
               final PersistentBottomSheetController<dynamic>
                   bottomSheetController = showBottomSheet<dynamic>(
