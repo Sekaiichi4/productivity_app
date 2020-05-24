@@ -5,6 +5,7 @@ import 'models/task.dart';
 SharedPreferences prefs;
 DateTime today;
 int currentWeekDay;
+String currentDayTitle;
 int dayOffset = 0;
 List<Task> tasks = <Task>[];
 List<Task> filteredTasks = <Task>[];
@@ -61,43 +62,108 @@ List<bool> getRepeatingDaysInList(String daysInString) {
   return days;
 }
 
-String getTodayInString() {
-  String todayName = '';
-
+void setToday() {
   today = DateTime.now().add(Duration(days: dayOffset));
+  currentDayTitle = '';
 
-  switch (today.weekday) {
+  switch (today.month) {
     case 1:
-      todayName += 'Monday ';
-      currentWeekDay = 0;
+      currentDayTitle += 'January ';
       break;
     case 2:
-      todayName += 'Tuesday ';
-      currentWeekDay = 1;
+      currentDayTitle += 'Febraury ';
       break;
     case 3:
-      todayName += 'Wednesday ';
-      currentWeekDay = 2;
+      currentDayTitle += 'March ';
       break;
     case 4:
-      todayName += 'Thursday ';
-      currentWeekDay = 3;
+      currentDayTitle += 'April ';
       break;
     case 5:
-      todayName += 'Friday ';
-      currentWeekDay = 4;
+      currentDayTitle += 'May ';
       break;
     case 6:
-      todayName += 'Saturday ';
-      currentWeekDay = 5;
+      currentDayTitle += 'June ';
       break;
     case 7:
-      todayName += 'Sunday ';
-      currentWeekDay = 6;
+      currentDayTitle += 'July ';
+      break;
+    case 8:
+      currentDayTitle += 'August ';
+      break;
+    case 9:
+      currentDayTitle += 'September ';
+      break;
+    case 10:
+      currentDayTitle += 'October ';
+      break;
+    case 11:
+      currentDayTitle += 'November ';
+      break;
+    case 12:
+      currentDayTitle += 'December ';
       break;
   }
 
-  todayName += '${today.day}-${today.month}-${today.year}';
+  currentDayTitle += today.day.toString();
 
-  return todayName;
+  switch (today.weekday) {
+    case 1:
+      currentWeekDay = 0;
+      break;
+    case 2:
+      currentWeekDay = 1;
+      break;
+    case 3:
+      currentWeekDay = 2;
+      break;
+    case 4:
+      currentWeekDay = 3;
+      break;
+    case 5:
+      currentWeekDay = 4;
+      break;
+    case 6:
+      currentWeekDay = 5;
+      break;
+    case 7:
+      currentWeekDay = 6;
+      break;
+  }
+}
+
+String getWeekdayInString(int _dayOffset) {
+  String dayName = '';
+
+  final DateTime day = DateTime.now().add(Duration(days: _dayOffset));
+
+  switch (day.weekday) {
+    case 1:
+      dayName = 'Monday';
+      break;
+    case 2:
+      dayName = 'Tuesday';
+      break;
+    case 3:
+      dayName = 'Wednesday';
+      break;
+    case 4:
+      dayName = 'Thursday';
+      break;
+    case 5:
+      dayName = 'Friday';
+      break;
+    case 6:
+      dayName = 'Saturday';
+      break;
+    case 7:
+      dayName = 'Sunday';
+      break;
+  }
+
+  return dayName;
+}
+
+String getMonthdayInString(int _dayOffset) {
+  return DateTime.now().add(Duration(days: _dayOffset)).day.toString();
 }
