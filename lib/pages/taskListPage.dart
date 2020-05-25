@@ -433,6 +433,7 @@ class _TaskListPageState extends State<TaskListPage> {
             ),
             Expanded(
               child: Container(
+                padding: const EdgeInsets.only(top: 15, bottom: 80),
                 color: cc.black,
                 child: const TaskList(),
               ),

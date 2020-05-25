@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../globals.dart';
+import 'package:productivity_helper/customColors.dart' as cc;
 
 class TaskTile extends StatelessWidget {
   const TaskTile({Key key, this.tileIndex}) : super(key: key);
@@ -32,6 +33,7 @@ class TaskTile extends StatelessWidget {
         final Task currentTask = taskData.getTask(filteredTasks[tileIndex].id);
 
         return Slidable(
+          enabled: dayOffset == 0,
           actionPane: const SlidableBehindActionPane(),
           actionExtentRatio: 0.25,
           actions: <Widget>[
@@ -117,15 +119,21 @@ class TaskTile extends StatelessWidget {
             ),
           ],
           child: Container(
-            color: Colors.white,
-            height: dayOffset != 0 ? 56 : 100,
+            height: 100,
             child: Row(
               children: <Widget>[
                 if (dayOffset == 0)
                   Container(
                     width: 40,
+                    decoration: BoxDecoration(
+                      color: cc.whiteTrans10,
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(23),
+                          bottomRight: Radius.circular(23)),
+                    ),
                     child: IconSlideAction(
-                      color: Colors.green.shade400,
+                      color: Colors.transparent,
+                      foregroundColor: cc.orange,
                       icon: Icons.remove,
                       onTap: () {
                         if (tasks[filteredTasks[tileIndex].id]
@@ -158,83 +166,137 @@ class TaskTile extends StatelessWidget {
                       },
                     ),
                   ),
+                const SizedBox(
+                  width: 10,
+                ),
                 Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                                child: Text(
-                              '${currentTask.name}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                            Container(
-                              width: 20,
-                              child: Text(
-                                '${currentTask.currentStreak}',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          // openEditTaskDialog(currentTask);
-                          print('Tapped on task with index $tileIndex');
-                          Provider.of<TaskData>(context, listen: false)
-                              .setActiveTask(filteredTasks[tileIndex].id);
+                  child: GestureDetector(
+                    onTap: () {
+                      // openEditTaskDialog(currentTask);
+                      print('Tapped on task with index $tileIndex');
+                      Provider.of<TaskData>(context, listen: false)
+                          .setActiveTask(filteredTasks[tileIndex].id);
 
-                          Navigator.push<dynamic>(context,
-                              MaterialPageRoute<dynamic>(
-                                  builder: (BuildContext context) {
-                            return const TaskViewPage();
-                          }));
-                        },
+                      Navigator.push<dynamic>(context,
+                          MaterialPageRoute<dynamic>(
+                              builder: (BuildContext context) {
+                        return const TaskViewPage();
+                      }));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: cc.whiteTrans10,
+                        borderRadius: BorderRadius.circular(23),
                       ),
-                      if (dayOffset == 0)
-                        Expanded(
-                          child: Container(
-                            color: Colors.grey.shade200,
-                            child: Center(
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            //TOP
+                            flex: 1,
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(left: 15, right: 10),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
+                                  Expanded(
+                                      child: Text(
+                                    '${currentTask.name}',
+                                    style: TextStyle(
+                                        color: cc.yellow,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
                                   Text(
-                                      '${currentTask.currentQuantity} ${getUnitName(currentTask.unit)}'),
-                                  if (currentTask.unit == 1)
-                                    IconButton(
-                                      splashColor: Colors.transparent,
-                                      icon: const Icon(Icons.play_arrow),
-                                      onPressed: () {
-                                        print('start timer');
-                                        Provider.of<TaskData>(context,
-                                                listen: false)
-                                            .setActiveTask(
-                                                filteredTasks[tileIndex].id);
-
-                                        Navigator.push<dynamic>(context,
-                                            MaterialPageRoute<dynamic>(builder:
-                                                (BuildContext context) {
-                                          return const TaskTimerPage();
-                                        }));
-                                      },
+                                    '${currentTask.currentQuantity}/${currentTask.quantity}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      color: cc.orange,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                          // ListTile(
+                          //   title:
+                          //   onTap: () {
+
+                          //   },
+                          // ),
+                          Expanded(
+                            // BOTTOM
+                            flex: 1,
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(left: 20, right: 15),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    '${currentTask.currentStreak} day(s) streak',
+                                    style: TextStyle(
+                                      color: cc.yellow,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${getUnitName(currentTask.unit)}',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      color: cc.orange,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  // if (currentTask.unit == 1 && dayOffset == 0)
+                                  //   IconButton(
+                                  //     splashColor: Colors.transparent,
+                                  //     icon: const Icon(Icons.play_arrow),
+                                  //     onPressed: () {
+                                  //       print('start timer');
+                                  //       Provider.of<TaskData>(context,
+                                  //               listen: false)
+                                  //           .setActiveTask(
+                                  //               filteredTasks[tileIndex].id);
+
+                                  //       Navigator.push<dynamic>(context,
+                                  //           MaterialPageRoute<dynamic>(
+                                  //               builder: (BuildContext context) {
+                                  //         return const TaskTimerPage();
+                                  //       }));
+                                  //     },
+                                  //   ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                ),
+                const SizedBox(
+                  width: 10,
                 ),
                 if (dayOffset == 0)
                   Container(
                     width: 40,
+                    decoration: BoxDecoration(
+                      color: cc.whiteTrans10,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          bottomLeft: Radius.circular(23)),
+                    ),
                     child: IconSlideAction(
-                      color: Colors.red.shade400,
-                      foregroundColor: Colors.black,
+                      color: Colors.transparent,
+                      foregroundColor: cc.orange,
                       icon: Icons.add,
                       onTap: () {
                         tasks[filteredTasks[tileIndex].id].currentQuantity++;
