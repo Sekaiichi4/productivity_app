@@ -29,93 +29,126 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskData>(
-      builder: (BuildContext context, TaskData taskData, child) {
+      builder: (BuildContext context, TaskData taskData, Widget child) {
         final Task currentTask = taskData.getTask(filteredTasks[tileIndex].id);
 
         return Slidable(
           enabled: dayOffset == 0,
-          actionPane: const SlidableBehindActionPane(),
+          actionPane: const SlidableScrollActionPane(),
           actionExtentRatio: 0.25,
           actions: <Widget>[
-            IconSlideAction(
-              caption: '-10',
-              color: Colors.green.shade800,
-              icon: Icons.remove,
-              onTap: () {
-                if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 10) {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+            Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: cc.whiteTrans10,
+                borderRadius: const BorderRadius.all(Radius.circular(23)),
+              ),
+              child: IconSlideAction(
+                caption: '-10',
+                color: Colors.transparent,
+                foregroundColor: cc.orange,
+                icon: Icons.remove,
+                onTap: () {
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <=
+                      10) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
 
-                  if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                    tasks[filteredTasks[tileIndex].id].cleared = true;
-                    if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                        null) {
-                      tasks[filteredTasks[tileIndex].id].currentStreak++;
-                      setTopStreak();
-                    } else {
-                      tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                      setTopStreak();
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                        setTopStreak();
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                        setTopStreak();
+                      }
                     }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 10;
                   }
-                } else {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 10;
-                }
 
-                Provider.of<TaskData>(context, listen: false).updateTask(
-                    tasks[filteredTasks[tileIndex].id],
-                    filteredTasks[tileIndex].id);
-              },
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
             ),
-            IconSlideAction(
-              caption: '-5',
-              color: Colors.green.shade600,
-              icon: Icons.remove,
-              onTap: () {
-                if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+            Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: cc.whiteTrans10,
+                borderRadius: const BorderRadius.all(Radius.circular(23)),
+              ),
+              child: IconSlideAction(
+                caption: '-5',
+                color: Colors.transparent,
+                foregroundColor: cc.orange,
+                icon: Icons.remove,
+                onTap: () {
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
 
-                  if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                    tasks[filteredTasks[tileIndex].id].cleared = true;
-                    if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                        null) {
-                      tasks[filteredTasks[tileIndex].id].currentStreak++;
-                      setTopStreak();
-                    } else {
-                      tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                      setTopStreak();
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                        setTopStreak();
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                        setTopStreak();
+                      }
                     }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
                   }
-                } else {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
-                }
 
-                Provider.of<TaskData>(context, listen: false).updateTask(
-                    tasks[filteredTasks[tileIndex].id],
-                    filteredTasks[tileIndex].id);
-              },
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
             ),
           ],
           secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: '+5',
-              color: Colors.red.shade600,
-              icon: Icons.add,
-              onTap: () {
-                tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
-                Provider.of<TaskData>(context, listen: false).updateTask(
-                    tasks[filteredTasks[tileIndex].id],
-                    filteredTasks[tileIndex].id);
-              },
+            Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: cc.whiteTrans10,
+                borderRadius: const BorderRadius.all(Radius.circular(23)),
+              ),
+              child: IconSlideAction(
+                caption: '+5',
+                color: Colors.transparent,
+                foregroundColor: cc.green,
+                icon: Icons.add,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
             ),
-            IconSlideAction(
-              caption: '+10',
-              color: Colors.red.shade800,
-              icon: Icons.add,
-              onTap: () {
-                tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
-                Provider.of<TaskData>(context, listen: false).updateTask(
-                    tasks[filteredTasks[tileIndex].id],
-                    filteredTasks[tileIndex].id);
-              },
+            Container(
+              margin: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: cc.whiteTrans10,
+                borderRadius: const BorderRadius.all(Radius.circular(23)),
+              ),
+              child: IconSlideAction(
+                caption: '+10',
+                color: Colors.transparent,
+                foregroundColor: cc.green,
+                icon: Icons.add,
+                onTap: () {
+                  tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
+                  Provider.of<TaskData>(context, listen: false).updateTask(
+                      tasks[filteredTasks[tileIndex].id],
+                      filteredTasks[tileIndex].id);
+                },
+              ),
             ),
           ],
           child: Container(
@@ -125,6 +158,7 @@ class TaskTile extends StatelessWidget {
                 if (dayOffset == 0)
                   Container(
                     width: 40,
+                    margin: const EdgeInsets.only(top: 5, bottom: 5),
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
                       borderRadius: const BorderRadius.only(
@@ -184,6 +218,7 @@ class TaskTile extends StatelessWidget {
                       }));
                     },
                     child: Container(
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
                       decoration: BoxDecoration(
                         color: cc.whiteTrans10,
                         borderRadius: BorderRadius.circular(23),
@@ -214,7 +249,10 @@ class TaskTile extends StatelessWidget {
                                     '${currentTask.currentQuantity}/${currentTask.quantity}',
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
-                                      color: cc.orange,
+                                      color: currentTask.currentQuantity ==
+                                              0 //TODO change 0 to the max value.
+                                          ? cc.green
+                                          : cc.orange,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -251,7 +289,10 @@ class TaskTile extends StatelessWidget {
                                     '${getUnitName(currentTask.unit)}',
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
-                                      color: cc.orange,
+                                      color: currentTask.currentQuantity ==
+                                              0 //TODO change 0 to the max value.
+                                          ? cc.green
+                                          : cc.orange,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -287,6 +328,7 @@ class TaskTile extends StatelessWidget {
                 ),
                 if (dayOffset == 0)
                   Container(
+                    margin: const EdgeInsets.only(top: 5, bottom: 5),
                     width: 40,
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
@@ -296,7 +338,7 @@ class TaskTile extends StatelessWidget {
                     ),
                     child: IconSlideAction(
                       color: Colors.transparent,
-                      foregroundColor: cc.orange,
+                      foregroundColor: cc.green,
                       icon: Icons.add,
                       onTap: () {
                         tasks[filteredTasks[tileIndex].id].currentQuantity++;
