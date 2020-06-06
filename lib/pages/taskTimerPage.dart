@@ -19,7 +19,8 @@ class TaskTimerPage extends StatelessWidget {
         void updateTime(int min, int sec) {
           if (min != tasks[currentTask.id].currentQuantity) {
             if (sec == 0) {
-              tasks[currentTask.id].currentQuantity = min;
+              tasks[currentTask.id].currentQuantity =
+                  tasks[currentTask.id].quantity - min;
 
               if (min == 0) {
                 if (!tasks[currentTask.id].cleared) {
@@ -62,7 +63,9 @@ class TaskTimerPage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Countdown(
-                    duration: Duration(minutes: currentTask.currentQuantity),
+                    duration: Duration(
+                        minutes:
+                            currentTask.quantity - currentTask.currentQuantity),
                     builder: (BuildContext ctx, Duration remaining) {
                       updateTime(remaining.inMinutes, remaining.inSeconds % 60);
                       return Text(

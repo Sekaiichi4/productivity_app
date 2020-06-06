@@ -54,7 +54,7 @@ class TaskData extends ChangeNotifier {
     //TODO: Maybe have a bool that lets the list wait while it is resetting before showing the content.
     print('resetting tasks with a length of ${tasks.length}');
     for (int i = 0; i < tasks.length; i++) {
-      tasks[i].currentQuantity = tasks[i].quantity;
+      tasks[i].currentQuantity = 0;
       if (tasks[i].cleared) {
         tasks[i].cleared = false;
       } else {

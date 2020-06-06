@@ -35,7 +35,7 @@ class TaskTile extends StatelessWidget {
         return Slidable(
           enabled: dayOffset == 0,
           actionPane: const SlidableScrollActionPane(),
-          actionExtentRatio: 0.25,
+          actionExtentRatio: 0.22,
           actions: <Widget>[
             Container(
               margin: const EdgeInsets.all(5),
@@ -52,18 +52,6 @@ class TaskTile extends StatelessWidget {
                   if (tasks[filteredTasks[tileIndex].id].currentQuantity <=
                       10) {
                     tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
-
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                        setTopStreak();
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                        setTopStreak();
-                      }
-                    }
                   } else {
                     tasks[filteredTasks[tileIndex].id].currentQuantity -= 10;
                   }
@@ -88,18 +76,6 @@ class TaskTile extends StatelessWidget {
                 onTap: () {
                   if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
                     tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
-
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                        setTopStreak();
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                        setTopStreak();
-                      }
-                    }
                   } else {
                     tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
                   }
@@ -124,7 +100,26 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity >=
+                      tasks[filteredTasks[tileIndex].id].quantity - 5) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity =
+                        tasks[filteredTasks[tileIndex].id].quantity;
+
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                        setTopStreak();
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                        setTopStreak();
+                      }
+                    }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
+                  }
+
                   Provider.of<TaskData>(context, listen: false).updateTask(
                       tasks[filteredTasks[tileIndex].id],
                       filteredTasks[tileIndex].id);
@@ -143,7 +138,26 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
+                  if (tasks[filteredTasks[tileIndex].id].currentQuantity >=
+                      tasks[filteredTasks[tileIndex].id].quantity - 10) {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity =
+                        tasks[filteredTasks[tileIndex].id].quantity;
+
+                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                      tasks[filteredTasks[tileIndex].id].cleared = true;
+                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
+                          null) {
+                        tasks[filteredTasks[tileIndex].id].currentStreak++;
+                        setTopStreak();
+                      } else {
+                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+                        setTopStreak();
+                      }
+                    }
+                  } else {
+                    tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
+                  }
+
                   Provider.of<TaskData>(context, listen: false).updateTask(
                       tasks[filteredTasks[tileIndex].id],
                       filteredTasks[tileIndex].id);
@@ -152,18 +166,16 @@ class TaskTile extends StatelessWidget {
             ),
           ],
           child: Container(
-            height: 100,
+            height: 80,
             child: Row(
               children: <Widget>[
                 if (dayOffset == 0)
                   Container(
-                    width: 40,
+                    width: 68,
                     margin: const EdgeInsets.only(top: 5, bottom: 5),
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(23),
-                          bottomRight: Radius.circular(23)),
+                      borderRadius: const BorderRadius.all(Radius.circular(23)),
                     ),
                     child: IconSlideAction(
                       color: Colors.transparent,
@@ -175,21 +187,6 @@ class TaskTile extends StatelessWidget {
                             1) {
                           tasks[filteredTasks[tileIndex].id].currentQuantity =
                               0;
-
-                          if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                            tasks[filteredTasks[tileIndex].id].cleared = true;
-                            if (tasks[filteredTasks[tileIndex].id]
-                                    .currentStreak !=
-                                null) {
-                              tasks[filteredTasks[tileIndex].id]
-                                  .currentStreak++;
-                              setTopStreak();
-                            } else {
-                              tasks[filteredTasks[tileIndex].id].currentStreak =
-                                  1;
-                              setTopStreak();
-                            }
-                          }
                         } else {
                           tasks[filteredTasks[tileIndex].id].currentQuantity--;
                         }
@@ -250,7 +247,7 @@ class TaskTile extends StatelessWidget {
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                       color: currentTask.currentQuantity ==
-                                              0 //TODO change 0 to the max value.
+                                              currentTask.quantity
                                           ? cc.green
                                           : cc.orange,
                                       fontSize: 20,
@@ -290,7 +287,7 @@ class TaskTile extends StatelessWidget {
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                       color: currentTask.currentQuantity ==
-                                              0 //TODO change 0 to the max value.
+                                              currentTask.quantity
                                           ? cc.green
                                           : cc.orange,
                                       fontSize: 14,
@@ -329,19 +326,40 @@ class TaskTile extends StatelessWidget {
                 if (dayOffset == 0)
                   Container(
                     margin: const EdgeInsets.only(top: 5, bottom: 5),
-                    width: 40,
+                    width: 68,
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(23),
-                          bottomLeft: Radius.circular(23)),
+                      borderRadius: const BorderRadius.all(Radius.circular(23)),
                     ),
                     child: IconSlideAction(
                       color: Colors.transparent,
                       foregroundColor: cc.green,
                       icon: Icons.add,
                       onTap: () {
-                        tasks[filteredTasks[tileIndex].id].currentQuantity++;
+                        if (tasks[filteredTasks[tileIndex].id]
+                                .currentQuantity >=
+                            tasks[filteredTasks[tileIndex].id].quantity - 1) {
+                          tasks[filteredTasks[tileIndex].id].currentQuantity =
+                              tasks[filteredTasks[tileIndex].id].quantity;
+
+                          if (!tasks[filteredTasks[tileIndex].id].cleared) {
+                            tasks[filteredTasks[tileIndex].id].cleared = true;
+                            if (tasks[filteredTasks[tileIndex].id]
+                                    .currentStreak !=
+                                null) {
+                              tasks[filteredTasks[tileIndex].id]
+                                  .currentStreak++;
+                              setTopStreak();
+                            } else {
+                              tasks[filteredTasks[tileIndex].id].currentStreak =
+                                  1;
+                              setTopStreak();
+                            }
+                          }
+                        } else {
+                          tasks[filteredTasks[tileIndex].id].currentQuantity++;
+                        }
+
                         Provider.of<TaskData>(context, listen: false)
                             .updateTask(tasks[filteredTasks[tileIndex].id],
                                 filteredTasks[tileIndex].id);

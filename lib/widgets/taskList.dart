@@ -14,7 +14,7 @@ class TaskList extends StatelessWidget {
             tileIndex: index,
           );
         },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        separatorBuilder: (BuildContext context, int index) => const Divider(height: 5,),
         itemCount: Provider.of<TaskData>(context).filteredTasksCount);
   }
 }

@@ -8,7 +8,7 @@ import 'package:productivity_helper/pages/taskListPage.dart';
 import 'package:provider/provider.dart';
 
 import 'models/taskData.dart';
-import 'customColors.dart';
+import 'customColors.dart' as cc;
 
 void main() {
   Hive.registerAdapter<Task>(TaskAdapter());
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<TaskData>(
       create: (BuildContext context) => TaskData(),
       child: MaterialApp(
+        color: cc.yellow,
         debugShowCheckedModeBanner: false,
         title: 'Laurens App',
         // theme: ThemeData(
