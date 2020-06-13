@@ -166,12 +166,13 @@ class TaskTile extends StatelessWidget {
             ),
           ],
           child: Container(
+            padding: const EdgeInsets.only(left: 5, right: 5),
             height: 80,
             child: Row(
               children: <Widget>[
                 if (dayOffset == 0)
                   Container(
-                    width: 68,
+                    width: 30,
                     margin: const EdgeInsets.only(top: 5, bottom: 5),
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
@@ -326,7 +327,7 @@ class TaskTile extends StatelessWidget {
                 if (dayOffset == 0)
                   Container(
                     margin: const EdgeInsets.only(top: 5, bottom: 5),
-                    width: 68,
+                    width: 30,
                     decoration: BoxDecoration(
                       color: cc.whiteTrans10,
                       borderRadius: const BorderRadius.all(Radius.circular(23)),
