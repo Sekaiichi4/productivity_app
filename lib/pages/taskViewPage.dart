@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:productivity_helper/models/taskData.dart';
 import 'package:productivity_helper/models/task.dart';
+import '../customColors.dart' as cc;
 
 class TaskViewPage extends StatelessWidget {
   const TaskViewPage({Key key}) : super(key: key);
@@ -77,6 +78,8 @@ class TaskViewPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: cc.black,
+            centerTitle: true,
             title: Text(
               currentTask?.name,
               style:
@@ -86,7 +89,7 @@ class TaskViewPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.create),
                 iconSize: 24.0,
-                color: Colors.green,
+                color: cc.yellow,
                 tooltip: 'Edit',
                 onPressed: () {
                   print('Selected to edit');
@@ -108,219 +111,222 @@ class TaskViewPage extends StatelessWidget {
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: 36.0,
-                    color: Colors.grey[300],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Text>[
-                        const Text(
-                          ' Quantity',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                        Text(
-                          '${currentTask?.quantity.toString()} ',
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0),
-                        ),
-                      ],
+          body: Container(
+            height: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 36.0,
+                      color: Colors.grey[300],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Text>[
+                          const Text(
+                            ' Quantity',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0),
+                          ),
+                          Text(
+                            '${currentTask?.quantity.toString()} ',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    height: 36.0,
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          ' Unit',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                        Text(
-                          '${getUnitName(currentTask?.unit)} ',
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 36.0,
-                    color: Colors.grey[300],
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'M',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[0]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'T',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[1]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'W',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[2]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'T',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[3]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'F',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[4]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'S',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[5]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            onPressed: () {},
-                            child: Text(
-                              'S',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: daysToRepeat[6]
-                                      ? FontWeight.bold
-                                      : FontWeight.normal),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 36.0,
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Text>[
-                        const Text(
-                          ' Top streak',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                        Text(
-                          '${currentTask?.topStreak.toString()} ',
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 36.0,
-                    color: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        const Text(
-                          ' Memo',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                    Container(
+                      height: 36.0,
                       color: Colors.white,
-                      child: SingleChildScrollView(
-                        child: Text(
-                          '${currentTask.memo}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            ' Unit',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0),
+                          ),
+                          Text(
+                            '${getUnitName(currentTask?.unit)} ',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 36.0,
+                      color: Colors.grey[300],
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'M',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[0]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'T',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[1]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'W',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[2]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'T',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[3]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'F',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[4]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'S',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[5]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'S',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: daysToRepeat[6]
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 36.0,
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Text>[
+                          const Text(
+                            ' Top streak',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0),
+                          ),
+                          Text(
+                            '${currentTask?.topStreak.toString()} ',
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 36.0,
+                      color: Colors.white,
+                      child: Row(
+                        children: <Widget>[
+                          const Text(
+                            ' Memo',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                        color: Colors.white,
+                        child: SingleChildScrollView(
+                          child: Text(
+                            '${currentTask.memo}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

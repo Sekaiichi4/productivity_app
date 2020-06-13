@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:productivity_helper/models/task.dart';
 import 'package:productivity_helper/models/taskData.dart';
+import 'package:provider/provider.dart';
+
+import '../customColors.dart' as cc;
 import '../globals.dart';
 
 class TaskEditPage extends StatefulWidget {
@@ -75,6 +76,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: cc.black,
+        centerTitle: true,
         title: Text(
           'Edit ${widget.currentTask.name}',
           style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
