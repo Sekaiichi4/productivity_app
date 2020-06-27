@@ -17,6 +17,7 @@ dependencies:
   provider: ^4.0.5
   flutter_slidable: ^0.5.4
   countdown_flutter: ^0.1.1
+  permission_handler: ^5.0.1+1
 
 dev_dependencies:
   hive_generator: ^0.7.0+2

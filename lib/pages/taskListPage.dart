@@ -4,6 +4,7 @@ import 'package:productivity_helper/models/taskData.dart';
 import 'package:productivity_helper/pages/taskCreatePage.dart';
 import 'package:productivity_helper/widgets/taskList.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../globals.dart';
 import 'package:productivity_helper/customColors.dart' as cc;
@@ -461,11 +462,15 @@ class _MyFloatingActionButtonState extends State<MyFloatingActionButton> {
     return FloatingActionButton(
       foregroundColor: cc.black,
       backgroundColor: cc.yellow,
-      onPressed: () {
-        Navigator.push<dynamic>(context,
-            MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-          return const TaskCreatePage();
-        }));
+      onPressed: () async {
+        final PermissionStatus status = await Permission.storage.request();
+
+        if (status.isGranted) {
+          Navigator.push<dynamic>(context,
+              MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+            return const TaskCreatePage();
+          }));
+        }
       },
       tooltip: 'Add Task',
       child: const Icon(Icons.add),

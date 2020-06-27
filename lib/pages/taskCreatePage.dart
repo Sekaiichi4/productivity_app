@@ -19,12 +19,30 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
   int unit = 0;
   String repeatingDays;
   List<bool> daysToRepeat = <bool>[true, true, true, true, true, true, true];
+  String memo;
+  bool nameNotGood = false, amountNotGood = false, dayNotGood = false;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  final TextEditingController hourController = TextEditingController();
+  final TextEditingController minuteController = TextEditingController();
+  final TextEditingController memoController = TextEditingController();
+
+  int changeIntoMinutes(String hours, String minutes) {
+    int result = 0;
+    if (hours.isNotEmpty) {
+      result += int.parse(hours) * 60;
+    }
+    if (minutes.isNotEmpty) {
+      result += int.parse(minutes);
+    }
+
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
+    // return Material();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cc.black,
@@ -42,7 +60,18 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '   Name',
+                  style: TextStyle(
+                    color: nameNotGood ? cc.orange : cc.white,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(23),
@@ -69,97 +98,180 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                   controller: nameController,
                 ),
               ),
-              const SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(23),
-                  color: cc.whiteTrans10,
-                ),
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.bottom,
-                  cursorColor: cc.yellow,
-                  style: TextStyle(color: cc.white),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(23.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cc.yellow,
-                      ),
-                      borderRadius: BorderRadius.circular(23.0),
-                    ),
-                    hintStyle: TextStyle(color: cc.whiteTrans20),
-                    hintText: 'Amount',
+              const SizedBox(height: 15),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '   My goal',
+                  style: TextStyle(
+                    color: amountNotGood ? cc.orange : cc.white,
+                    fontSize: 16.0,
                   ),
-                  controller: quantityController,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(23),
+                        color: cc.whiteTrans10,
+                      ),
+                      child: TextField(
+                        onTap: () {
+                          hourController.clear();
+                          minuteController.clear();
+                          unit = 0;
+                        },
+                        textAlignVertical: TextAlignVertical.bottom,
+                        cursorColor: cc.yellow,
+                        style: TextStyle(color: cc.white),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: cc.yellow,
+                            ),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          hintStyle: TextStyle(color: cc.whiteTrans20),
+                          hintText: 'Amount',
+                        ),
+                        controller: quantityController,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      '   times   ',
+                      style: TextStyle(
+                        color: cc.yellow,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '-------------------------------- or --------------------------------',
+                style: TextStyle(
+                  color: cc.white,
+                  fontSize: 16.0,
                 ),
               ),
               const SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            unit = 0;
-                          });
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(23),
+                        color: cc.whiteTrans10,
+                      ),
+                      child: TextField(
+                        onTap: () {
+                          quantityController.clear();
+                          unit = 1;
                         },
-                        child: Text(
-                          'times',
-                          style: TextStyle(
+                        textAlignVertical: TextAlignVertical.bottom,
+                        cursorColor: cc.yellow,
+                        style: TextStyle(color: cc.white),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
                               color: cc.yellow,
-                              fontSize: 16.0,
-                              fontWeight: unit == 0
-                                  ? FontWeight.bold
-                                  : FontWeight.normal),
+                            ),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          hintStyle: TextStyle(color: cc.whiteTrans20),
+                          hintText: 'Hours',
                         ),
+                        controller: hourController,
                       ),
                     ),
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            unit = 1;
-                          });
-                        },
-                        child: Text(
-                          'minutes',
-                          style: TextStyle(
-                              color: cc.yellow,
-                              fontSize: 16.0,
-                              fontWeight: unit == 1
-                                  ? FontWeight.bold
-                                  : FontWeight.normal),
-                        ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' hr ',
+                      style: TextStyle(
+                        color: cc.yellow,
+                        fontSize: 16.0,
                       ),
                     ),
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            unit = 2;
-                          });
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(23),
+                        color: cc.whiteTrans10,
+                      ),
+                      child: TextField(
+                        onTap: () {
+                          quantityController.clear();
+                          unit = 1;
                         },
-                        child: Text(
-                          'hours',
-                          style: TextStyle(
+                        textAlignVertical: TextAlignVertical.bottom,
+                        cursorColor: cc.yellow,
+                        style: TextStyle(color: cc.white),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
                               color: cc.yellow,
-                              fontSize: 16.0,
-                              fontWeight: unit == 2
-                                  ? FontWeight.bold
-                                  : FontWeight.normal),
+                            ),
+                            borderRadius: BorderRadius.circular(23.0),
+                          ),
+                          hintStyle: TextStyle(color: cc.whiteTrans20),
+                          hintText: 'Minutes',
                         ),
+                        controller: minuteController,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    child: Text(
+                      ' mins ',
+                      style: TextStyle(
+                        color: cc.yellow,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '   Choose days',
+                  style: TextStyle(
+                    color: dayNotGood ? cc.orange : cc.white,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -212,7 +324,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.cyan,
                             child: Text(
@@ -252,7 +364,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.amber,
                             child: Text(
@@ -292,7 +404,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.cyan,
                             child: Text(
@@ -332,7 +444,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.amber,
                             child: Text(
@@ -372,7 +484,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.cyan,
                             child: Text(
@@ -412,7 +524,7 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                         });
                       },
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           Container(
                             // color: Colors.amber,
                             child: Text(
@@ -445,6 +557,46 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 15),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '   Memo',
+                  style: TextStyle(
+                    color: cc.white,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(23),
+                  color: cc.whiteTrans10,
+                ),
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  textAlignVertical: TextAlignVertical.bottom,
+                  cursorColor: cc.yellow,
+                  style: TextStyle(color: cc.white),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(23.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: cc.yellow,
+                      ),
+                      borderRadius: BorderRadius.circular(23.0),
+                    ),
+                    hintStyle: TextStyle(color: cc.whiteTrans20),
+                    hintText: 'Habit name...',
+                  ),
+                  controller: memoController,
+                ),
+              ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -452,18 +604,63 @@ class _TaskCreatePageState extends State<TaskCreatePage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        name = nameController.text;
-                        quantity = int.parse(quantityController.text);
+                        //SET NAME
+                        if (nameController.text.isEmpty) {
+                          print('Please enter a name.');
+                          nameNotGood = true;
+                          return;
+                        } else {
+                          nameNotGood = false;
+                          name = nameController.text;
+                        }
+
+                        //SET AMOUNT
+                        if (quantityController.text.isEmpty) {
+                          if (hourController.text.isEmpty) {
+                            if (minuteController.text.isEmpty) {
+                              print('Please enter an amount.');
+                              amountNotGood = true;
+                              return;
+                            } else {
+                              amountNotGood = false;
+                            }
+                          } else {
+                            amountNotGood = false;
+                          }
+                        } else {
+                          amountNotGood = false;
+                        }
+
+                        if (!amountNotGood) {
+                          if (unit == 0) {
+                            quantity = int.parse(quantityController.text);
+                          } else if (unit == 1) {
+                            quantity = changeIntoMinutes(
+                                hourController.text, minuteController.text);
+                          }
+                        }
+
+                        //SET DAY
                         repeatingDays = getRepeatingDaysInBinary(daysToRepeat);
 
-                        if (name == null) {
-                          print('Please enter a name.');
+                        if (repeatingDays == '0000000') {
+                          print('Please choose a day.');
+                          dayNotGood = true;
                           return;
+                        } else {
+                          dayNotGood = false;
+                        }
+
+                        //SET MEMO
+                        if (memoController.text.isEmpty) {
+                          memo = 'No Memo';
+                        } else {
+                          memo = memoController.text;
                         }
 
                         Provider.of<TaskData>(context, listen: false).addTask(
                             Task(tasks.length, name, quantity, unit, false,
-                                repeatingDays, 0, 'Insert Memo', 0, 0));
+                                repeatingDays, 0, memo, 0, 0));
 
                         Navigator.pop(context);
                       });
