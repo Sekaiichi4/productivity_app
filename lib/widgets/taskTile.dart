@@ -26,6 +26,213 @@ class TaskTile extends StatelessWidget {
     }
   }
 
+  Future<void> _askedToLead(BuildContext mainContext) async {
+    switch (await showDialog<int>(
+        context: mainContext,
+        builder: (BuildContext context) {
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Material(
+                color: Colors.transparent,
+                child: Container(
+                  constraints: const BoxConstraints(
+                      maxHeight: 280.0,
+                      maxWidth: 300.0,
+                      minWidth: 150.0,
+                      minHeight: 150.0),
+                  decoration: BoxDecoration(
+                    color: cc.black,
+                    border: Border.all(
+                      color: cc.yellow,
+                      width: 2,
+                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(23)),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Expanded(flex: 1, child: SizedBox()),
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              child: Text(
+                                "I'd like to",
+                                textAlign: TextAlign.end,
+                                style: TextStyle(color: cc.white, fontSize: 25),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: IconButton(
+                              iconSize: 30,
+                              icon: Icon(
+                                Icons.close,
+                                color: cc.yellow,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 0);
+                        },
+                        child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: cc.whiteTrans20,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(23)),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: cc.yellow,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    'Finish',
+                                    style: TextStyle(
+                                        color: cc.white, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 1);
+                        },
+                        child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: cc.whiteTrans20,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(23)),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: cc.yellow,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                        color: cc.white, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 2);
+                        },
+                        child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: cc.whiteTrans20,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(23)),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    Icons.description,
+                                    color: cc.yellow,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    'View Details',
+                                    style: TextStyle(
+                                        color: cc.white, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 3);
+                        },
+                        child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: cc.whiteTrans20,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(23)),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: Icon(
+                                    Icons.timer,
+                                    color: cc.yellow,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    'Open Timer',
+                                    style: TextStyle(
+                                        color: cc.white, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        })) {
+      case 0:
+        // Finish Task
+        // ...
+        break;
+      case 1:
+        // Delete
+        // ...
+        break;
+      case 2:
+        // View Details
+        Navigator.push<dynamic>(mainContext,
+            MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+          return const TaskViewPage();
+        }));
+        break;
+      case 3:
+        // Open Timer
+        // ...
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskData>(
@@ -209,11 +416,7 @@ class TaskTile extends StatelessWidget {
                       Provider.of<TaskData>(context, listen: false)
                           .setActiveTask(filteredTasks[tileIndex].id);
 
-                      Navigator.push<dynamic>(context,
-                          MaterialPageRoute<dynamic>(
-                              builder: (BuildContext context) {
-                        return const TaskViewPage();
-                      }));
+                      _askedToLead(context);
                     },
                     child: Container(
                       margin: const EdgeInsets.only(top: 5, bottom: 5),
