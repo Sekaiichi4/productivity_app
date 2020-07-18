@@ -158,23 +158,6 @@ class _TaskEditPageState extends State<TaskEditPage> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            newUnit = 2;
-                          });
-                        },
-                        child: Text(
-                          'hours',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: newUnit == 2
-                                  ? FontWeight.bold
-                                  : FontWeight.normal),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

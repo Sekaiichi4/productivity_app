@@ -26,7 +26,7 @@ class TaskTile extends StatelessWidget {
     }
   }
 
-  Future<void> _askedToLead(BuildContext mainContext) async {
+  Future<void> _showTaskOptions(BuildContext mainContext) async {
     switch (await showDialog<int>(
         context: mainContext,
         builder: (BuildContext context) {
@@ -36,8 +36,8 @@ class TaskTile extends StatelessWidget {
               Material(
                 color: Colors.transparent,
                 child: Container(
-                  constraints: const BoxConstraints(
-                      maxHeight: 280.0,
+                  constraints: BoxConstraints(
+                      maxHeight: dayOffset == 0 ? 280.0 : 180,
                       maxWidth: 300.0,
                       minWidth: 150.0,
                       minHeight: 150.0),
@@ -80,37 +80,38 @@ class TaskTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.pop(context, 0);
-                        },
-                        child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: cc.whiteTrans20,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(23)),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Icon(
-                                    Icons.check,
-                                    color: cc.yellow,
+                      if (dayOffset == 0)
+                        SimpleDialogOption(
+                          onPressed: () {
+                            Navigator.pop(context, 0);
+                          },
+                          child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: cc.whiteTrans20,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(23)),
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: Icon(
+                                      Icons.check,
+                                      color: cc.yellow,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    'Finish',
-                                    style: TextStyle(
-                                        color: cc.white, fontSize: 20),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      'Finish',
+                                      style: TextStyle(
+                                          color: cc.white, fontSize: 20),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )),
-                      ),
+                                ],
+                              )),
+                        ),
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.pop(context, 1);
@@ -173,37 +174,38 @@ class TaskTile extends StatelessWidget {
                               ],
                             )),
                       ),
-                      SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.pop(context, 3);
-                        },
-                        child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: cc.whiteTrans20,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(23)),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Icon(
-                                    Icons.timer,
-                                    color: cc.yellow,
+                      if (dayOffset == 0 && filteredTasks[tileIndex].unit == 1)
+                        SimpleDialogOption(
+                          onPressed: () {
+                            Navigator.pop(context, 3);
+                          },
+                          child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: cc.whiteTrans20,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(23)),
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: Icon(
+                                      Icons.timer,
+                                      color: cc.yellow,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                    'Open Timer',
-                                    style: TextStyle(
-                                        color: cc.white, fontSize: 20),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      'Open Timer',
+                                      style: TextStyle(
+                                          color: cc.white, fontSize: 20),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )),
-                      ),
+                                ],
+                              )),
+                        ),
                     ],
                   ),
                 ),
@@ -233,6 +235,63 @@ class TaskTile extends StatelessWidget {
     }
   }
 
+  Future<void> _showValueSliderDialog(
+      BuildContext mainContext, bool isIncreasing, int tileIndex) async {
+    // this will contain the result from Navigator.pop(context, result)
+    final int selectedAmount = await showDialog<int>(
+      context: mainContext,
+      builder: (BuildContext context) =>
+          ValuePickerDialog(tileIndex: tileIndex, isIncreasing: isIncreasing),
+    );
+
+    // execution of this code continues when the dialog was closed (popped)
+
+    // note that the result can also be null, so check it
+    // (back button or pressed outside of the dialog)
+    if (selectedAmount != null) {
+      print('Amount selected is $selectedAmount');
+      if (isIncreasing) {
+        updateTaskValue(mainContext, tileIndex, selectedAmount);
+      } else {
+        updateTaskValue(mainContext, tileIndex, -selectedAmount);
+      }
+    }
+  }
+
+  void updateTaskValue(BuildContext mainContext, int tileIndex, int amount) {
+    if (amount < 0) //Subtraction
+    {
+      if (tasks[filteredTasks[tileIndex].id].currentQuantity <= amount) {
+        tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
+      } else {
+        tasks[filteredTasks[tileIndex].id].currentQuantity += amount;
+      }
+    } else {
+      //Increase
+      if (tasks[filteredTasks[tileIndex].id].currentQuantity >=
+          tasks[filteredTasks[tileIndex].id].quantity - amount) {
+        tasks[filteredTasks[tileIndex].id].currentQuantity =
+            tasks[filteredTasks[tileIndex].id].quantity;
+
+        if (!tasks[filteredTasks[tileIndex].id].cleared) {
+          tasks[filteredTasks[tileIndex].id].cleared = true;
+          if (tasks[filteredTasks[tileIndex].id].currentStreak != null) {
+            tasks[filteredTasks[tileIndex].id].currentStreak++;
+            setTopStreak();
+          } else {
+            tasks[filteredTasks[tileIndex].id].currentStreak = 1;
+            setTopStreak();
+          }
+        }
+      } else {
+        tasks[filteredTasks[tileIndex].id].currentQuantity += amount;
+      }
+    }
+
+    Provider.of<TaskData>(mainContext, listen: false).updateTask(
+        tasks[filteredTasks[tileIndex].id], filteredTasks[tileIndex].id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskData>(
@@ -256,16 +315,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.orange,
                 icon: Icons.remove,
                 onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <=
-                      10) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 10;
-                  }
-
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
+                  updateTaskValue(context, tileIndex, -10);
                 },
               ),
             ),
@@ -281,15 +331,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.orange,
                 icon: Icons.remove,
                 onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity <= 5) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity = 0;
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity -= 5;
-                  }
-
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
+                  updateTaskValue(context, tileIndex, -5);
                 },
               ),
             ),
@@ -307,29 +349,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity >=
-                      tasks[filteredTasks[tileIndex].id].quantity - 5) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity =
-                        tasks[filteredTasks[tileIndex].id].quantity;
-
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                        setTopStreak();
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                        setTopStreak();
-                      }
-                    }
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity += 5;
-                  }
-
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
+                  updateTaskValue(context, tileIndex, 5);
                 },
               ),
             ),
@@ -345,29 +365,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  if (tasks[filteredTasks[tileIndex].id].currentQuantity >=
-                      tasks[filteredTasks[tileIndex].id].quantity - 10) {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity =
-                        tasks[filteredTasks[tileIndex].id].quantity;
-
-                    if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                      tasks[filteredTasks[tileIndex].id].cleared = true;
-                      if (tasks[filteredTasks[tileIndex].id].currentStreak !=
-                          null) {
-                        tasks[filteredTasks[tileIndex].id].currentStreak++;
-                        setTopStreak();
-                      } else {
-                        tasks[filteredTasks[tileIndex].id].currentStreak = 1;
-                        setTopStreak();
-                      }
-                    }
-                  } else {
-                    tasks[filteredTasks[tileIndex].id].currentQuantity += 10;
-                  }
-
-                  Provider.of<TaskData>(context, listen: false).updateTask(
-                      tasks[filteredTasks[tileIndex].id],
-                      filteredTasks[tileIndex].id);
+                  updateTaskValue(context, tileIndex, 10);
                 },
               ),
             ),
@@ -378,32 +376,27 @@ class TaskTile extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 if (dayOffset == 0)
-                  Container(
-                    width: 30,
-                    margin: const EdgeInsets.only(top: 5, bottom: 5),
-                    decoration: BoxDecoration(
-                      color: cc.whiteTrans10,
-                      borderRadius: const BorderRadius.all(Radius.circular(23)),
+                  GestureDetector(
+                    child: Container(
+                      width: 30,
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
+                      decoration: BoxDecoration(
+                        color: cc.whiteTrans10,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(23)),
+                      ),
+                      child: IconSlideAction(
+                        color: Colors.transparent,
+                        foregroundColor: cc.orange,
+                        icon: Icons.remove,
+                        onTap: () {
+                          updateTaskValue(context, tileIndex, -1);
+                        },
+                      ),
                     ),
-                    child: IconSlideAction(
-                      color: Colors.transparent,
-                      foregroundColor: cc.orange,
-                      icon: Icons.remove,
-                      onTap: () {
-                        if (tasks[filteredTasks[tileIndex].id]
-                                .currentQuantity <=
-                            1) {
-                          tasks[filteredTasks[tileIndex].id].currentQuantity =
-                              0;
-                        } else {
-                          tasks[filteredTasks[tileIndex].id].currentQuantity--;
-                        }
-
-                        Provider.of<TaskData>(context, listen: false)
-                            .updateTask(tasks[filteredTasks[tileIndex].id],
-                                filteredTasks[tileIndex].id);
-                      },
-                    ),
+                    onLongPress: () {
+                      _showValueSliderDialog(context, false, tileIndex);
+                    },
                   ),
                 const SizedBox(
                   width: 10,
@@ -416,7 +409,7 @@ class TaskTile extends StatelessWidget {
                       Provider.of<TaskData>(context, listen: false)
                           .setActiveTask(filteredTasks[tileIndex].id);
 
-                      _askedToLead(context);
+                      _showTaskOptions(context);
                     },
                     child: Container(
                       margin: const EdgeInsets.only(top: 5, bottom: 5),
@@ -447,13 +440,17 @@ class TaskTile extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   )),
                                   Text(
-                                    '${currentTask.currentQuantity}/${currentTask.quantity}',
+                                    dayOffset == 0
+                                        ? '${currentTask.currentQuantity}/${currentTask.quantity}'
+                                        : '${currentTask.quantity}',
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
-                                      color: currentTask.currentQuantity ==
-                                              currentTask.quantity
-                                          ? cc.green
-                                          : cc.orange,
+                                      color: dayOffset == 0
+                                          ? currentTask.currentQuantity ==
+                                                  currentTask.quantity
+                                              ? cc.green
+                                              : cc.orange
+                                          : cc.white,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -490,10 +487,12 @@ class TaskTile extends StatelessWidget {
                                     '${getUnitName(currentTask.unit)}',
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
-                                      color: currentTask.currentQuantity ==
-                                              currentTask.quantity
-                                          ? cc.green
-                                          : cc.orange,
+                                      color: dayOffset == 0
+                                          ? currentTask.currentQuantity ==
+                                                  currentTask.quantity
+                                              ? cc.green
+                                              : cc.orange
+                                          : cc.white,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -528,53 +527,176 @@ class TaskTile extends StatelessWidget {
                   width: 10,
                 ),
                 if (dayOffset == 0)
-                  Container(
-                    margin: const EdgeInsets.only(top: 5, bottom: 5),
-                    width: 30,
-                    decoration: BoxDecoration(
-                      color: cc.whiteTrans10,
-                      borderRadius: const BorderRadius.all(Radius.circular(23)),
+                  GestureDetector(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
+                      width: 30,
+                      decoration: BoxDecoration(
+                        color: cc.whiteTrans10,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(23)),
+                      ),
+                      child: IconSlideAction(
+                        color: Colors.transparent,
+                        foregroundColor: cc.green,
+                        icon: Icons.add,
+                        onTap: () {
+                          updateTaskValue(context, tileIndex, 1);
+                        },
+                      ),
                     ),
-                    child: IconSlideAction(
-                      color: Colors.transparent,
-                      foregroundColor: cc.green,
-                      icon: Icons.add,
-                      onTap: () {
-                        if (tasks[filteredTasks[tileIndex].id]
-                                .currentQuantity >=
-                            tasks[filteredTasks[tileIndex].id].quantity - 1) {
-                          tasks[filteredTasks[tileIndex].id].currentQuantity =
-                              tasks[filteredTasks[tileIndex].id].quantity;
-
-                          if (!tasks[filteredTasks[tileIndex].id].cleared) {
-                            tasks[filteredTasks[tileIndex].id].cleared = true;
-                            if (tasks[filteredTasks[tileIndex].id]
-                                    .currentStreak !=
-                                null) {
-                              tasks[filteredTasks[tileIndex].id]
-                                  .currentStreak++;
-                              setTopStreak();
-                            } else {
-                              tasks[filteredTasks[tileIndex].id].currentStreak =
-                                  1;
-                              setTopStreak();
-                            }
-                          }
-                        } else {
-                          tasks[filteredTasks[tileIndex].id].currentQuantity++;
-                        }
-
-                        Provider.of<TaskData>(context, listen: false)
-                            .updateTask(tasks[filteredTasks[tileIndex].id],
-                                filteredTasks[tileIndex].id);
-                      },
-                    ),
+                    onLongPress: () {
+                      _showValueSliderDialog(context, true, tileIndex);
+                    },
                   ),
               ],
             ),
           ),
         );
       },
+    );
+  }
+}
+
+// move the dialog into it's own stateful widget.
+// It's completely independent from your page
+// this is good practice
+class ValuePickerDialog extends StatefulWidget {
+  /// initial selection for the slider
+  final int tileIndex;
+  final bool isIncreasing;
+
+  const ValuePickerDialog({Key key, this.tileIndex, this.isIncreasing})
+      : super(key: key);
+
+  @override
+  _ValuePickerDialogState createState() => _ValuePickerDialogState();
+}
+
+class _ValuePickerDialogState extends State<ValuePickerDialog> {
+  /// current selection of the slider
+  double _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Material(
+          color: Colors.transparent,
+          child: Container(
+            constraints: const BoxConstraints(
+                maxHeight: 200.0,
+                maxWidth: 300.0,
+                minWidth: 150.0,
+                minHeight: 100.0),
+            decoration: BoxDecoration(
+              color: cc.black,
+              border: Border.all(
+                color: cc.yellow,
+                width: 2,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(23)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Expanded(flex: 1, child: SizedBox()),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        child: Text(
+                          widget.isIncreasing
+                              ? 'Add this amount'
+                              : 'Subtract this amount',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: cc.white, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        iconSize: 30,
+                        icon: Icon(
+                          Icons.close,
+                          color: cc.yellow,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 40,
+                  child: Text(
+                    '${_value.toInt()}',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(color: cc.yellow, fontSize: 25),
+                  ),
+                ),
+                Container(
+                  child: Slider(
+                    activeColor: cc.yellow,
+                    inactiveColor: cc.white,
+                    value: _value,
+                    min: 0,
+                    max: widget.isIncreasing
+                        ? (tasks[filteredTasks[widget.tileIndex].id].quantity -
+                                tasks[filteredTasks[widget.tileIndex].id]
+                                    .currentQuantity)
+                            .toDouble()
+                        : tasks[filteredTasks[widget.tileIndex].id]
+                            .currentQuantity
+                            .toDouble(),
+                    label: '${_value.toInt()}',
+                    onChanged: (double value) {
+                      setState(() {
+                        _value = value;
+                      });
+                    },
+                  ),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context, _value.toInt());
+                  },
+                  child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: cc.whiteTrans20,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(23)),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              'Apply',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: cc.white, fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
