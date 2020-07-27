@@ -215,11 +215,20 @@ class TaskTile extends StatelessWidget {
         })) {
       case 0:
         // Finish Task
-        // ...
+        updateTaskValue(mainContext, tileIndex, 0, true);
         break;
       case 1:
         // Delete
-        // ...
+        final bool doDeleteTask = await showDialog<bool>(
+          context: mainContext,
+          builder: (BuildContext context) => const DeleteConfirmDialog(),
+        );
+
+        if (doDeleteTask) {
+          print('Deleting ${filteredTasks[tileIndex].name}');
+          Provider.of<TaskData>(mainContext, listen: false)
+              .deleteTask(filteredTasks[tileIndex].id);
+        }
         break;
       case 2:
         // View Details
@@ -230,7 +239,10 @@ class TaskTile extends StatelessWidget {
         break;
       case 3:
         // Open Timer
-        // ...
+        Navigator.push<dynamic>(mainContext,
+            MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+          return const TaskTimerPage();
+        }));
         break;
     }
   }
@@ -251,14 +263,19 @@ class TaskTile extends StatelessWidget {
     if (selectedAmount != null) {
       print('Amount selected is $selectedAmount');
       if (isIncreasing) {
-        updateTaskValue(mainContext, tileIndex, selectedAmount);
+        updateTaskValue(mainContext, tileIndex, selectedAmount, false);
       } else {
-        updateTaskValue(mainContext, tileIndex, -selectedAmount);
+        updateTaskValue(mainContext, tileIndex, -selectedAmount, false);
       }
     }
   }
 
-  void updateTaskValue(BuildContext mainContext, int tileIndex, int amount) {
+  void updateTaskValue(
+      BuildContext mainContext, int tileIndex, int amount, bool doFinishTask) {
+    if (doFinishTask) {
+      amount = filteredTasks[tileIndex].quantity;
+    }
+
     if (amount < 0) //Subtraction
     {
       if (tasks[filteredTasks[tileIndex].id].currentQuantity <= amount) {
@@ -315,7 +332,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.orange,
                 icon: Icons.remove,
                 onTap: () {
-                  updateTaskValue(context, tileIndex, -10);
+                  updateTaskValue(context, tileIndex, -10, false);
                 },
               ),
             ),
@@ -331,7 +348,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.orange,
                 icon: Icons.remove,
                 onTap: () {
-                  updateTaskValue(context, tileIndex, -5);
+                  updateTaskValue(context, tileIndex, -5, false);
                 },
               ),
             ),
@@ -349,7 +366,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  updateTaskValue(context, tileIndex, 5);
+                  updateTaskValue(context, tileIndex, 5, false);
                 },
               ),
             ),
@@ -365,7 +382,7 @@ class TaskTile extends StatelessWidget {
                 foregroundColor: cc.green,
                 icon: Icons.add,
                 onTap: () {
-                  updateTaskValue(context, tileIndex, 10);
+                  updateTaskValue(context, tileIndex, 10, false);
                 },
               ),
             ),
@@ -390,7 +407,7 @@ class TaskTile extends StatelessWidget {
                         foregroundColor: cc.orange,
                         icon: Icons.remove,
                         onTap: () {
-                          updateTaskValue(context, tileIndex, -1);
+                          updateTaskValue(context, tileIndex, -1, false);
                         },
                       ),
                     ),
@@ -541,7 +558,7 @@ class TaskTile extends StatelessWidget {
                         foregroundColor: cc.green,
                         icon: Icons.add,
                         onTap: () {
-                          updateTaskValue(context, tileIndex, 1);
+                          updateTaskValue(context, tileIndex, 1, false);
                         },
                       ),
                     ),
@@ -691,6 +708,131 @@ class _ValuePickerDialogState extends State<ValuePickerDialog> {
                           ),
                         ],
                       )),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DeleteConfirmDialog extends StatefulWidget {
+  const DeleteConfirmDialog({Key key}) : super(key: key);
+
+  @override
+  _DeleteConfirmDialogState createState() => _DeleteConfirmDialogState();
+}
+
+class _DeleteConfirmDialogState extends State<DeleteConfirmDialog> {
+  /// current selection of the slider
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Material(
+          color: Colors.transparent,
+          child: Container(
+            constraints: const BoxConstraints(
+                maxHeight: 210.0,
+                maxWidth: 300.0,
+                minWidth: 150.0,
+                minHeight: 100.0),
+            decoration: BoxDecoration(
+              color: cc.black,
+              border: Border.all(
+                color: cc.yellow,
+                width: 2,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(23)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Expanded(flex: 1, child: SizedBox()),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 40,
+                        child: Text(
+                          'Are you sure?',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: cc.white, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        iconSize: 30,
+                        icon: Icon(
+                          Icons.close,
+                          color: cc.yellow,
+                        ),
+                        onPressed: () => Navigator.pop(context, false),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  alignment: Alignment.center,
+                  height: 80,
+                  child: Text(
+                    "You're about to delete this task forever.",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: cc.white, fontSize: 20),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: cc.whiteTrans20,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(23)),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: cc.white, fontSize: 20),
+                          )),
+                    ),
+                    SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: cc.whiteTrans20,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(23)),
+                          ),
+                          child: Text(
+                            'Delete',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: cc.orange, fontSize: 20),
+                          )),
+                    ),
+                  ],
                 ),
               ],
             ),
