@@ -241,7 +241,7 @@ class TaskTile extends StatelessWidget {
         // Open Timer
         Navigator.push<dynamic>(mainContext,
             MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-          return const TaskTimerPage();
+          return TaskTimerPage(currentTask: filteredTasks[tileIndex]);
         }));
         break;
     }
